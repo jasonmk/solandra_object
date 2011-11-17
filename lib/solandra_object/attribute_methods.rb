@@ -5,9 +5,13 @@ module SolandraObject
     module ClassMethods
       def attribute(name, options)
         type = options[:type]
+        searchable = options.delete :searchable
+        searchable = true if searchable.nil?
         super
-        searchable do
-          send type, name.to_s  
+        if(searchable)
+          searchable do
+            send type, name.to_s  
+          end
         end
       end
     end

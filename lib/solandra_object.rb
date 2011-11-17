@@ -8,3 +8,4 @@ module SolandraObject
 end
 
 require 'solandra_object/railtie' if defined?(Rails)
+require 'solandra_object/sunspot_types'

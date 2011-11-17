@@ -15,3 +15,4 @@ gem "jquery-rails"
 
 # To use debugger
 # gem 'ruby-debug'
+gem 'jkusar-cassandra_object', '2.8.0', :path => "/apps/rails_apps/cassandra_object"
