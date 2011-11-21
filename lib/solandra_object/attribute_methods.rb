@@ -10,7 +10,7 @@ module SolandraObject
         super
         if(searchable)
           searchable do
-            send type, name.to_s  
+            send type, name.to_s
           end
         end
       end
