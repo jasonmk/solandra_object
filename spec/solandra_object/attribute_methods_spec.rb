@@ -17,4 +17,8 @@ describe SolandraObject::Base do
   it "should not declare fields as searchable if told not to" do
     lambda { Sunspot::Setup.instance_variable_get(:@setups)[:AttributeMethodsTester].field(:non_search_string) }.should raise_exception(Sunspot::UnrecognizedFieldError)
   end
+  
+  it "should add unqiue_id to the Sunspot config automatically" do
+    Sunspot::Setup.for(AttributeMethodsTester).fields.detect {|f|f.name == :unique_id}.should_not be_nil
+  end
 end

@@ -3,11 +3,6 @@ require 'active_support/core_ext/array/wrap'
 module SolandraObject
   module Validations
     class UniquenessValidator < ActiveModel::EachValidator
-      # Tie the Uniqueness validator to a class
-      # def setup(klass)
-        # @klass = klass
-      # end
-      
       def validate_each(record, attribute, value)
         # XXX: The following will break if/when abstract base classes
         #      are implemented in solandra object (such as STI)
