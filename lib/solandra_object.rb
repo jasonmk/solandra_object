@@ -6,9 +6,12 @@ module SolandraObject
   autoload :AttributeMethods
   autoload :SunspotAdapters
   autoload :Validations
+  autoload :Associations
+  autoload :Reflection
 end
 
 require 'solandra_object/railtie' if defined?(Rails)
+require 'solandra_object/errors'
 require 'solandra_object/sunspot_types'
 
 ActiveSupport.run_load_hooks(:solandra_object, SolandraObject::Base)

@@ -1,6 +1,5 @@
 module SolandraObject
   module Validations
-    
   end
 end
 

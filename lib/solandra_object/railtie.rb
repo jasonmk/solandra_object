@@ -1,5 +1,5 @@
 require 'solandra_object'
-require 'sunspot/rails'
+require 'sunspot_rails'
 require 'rails'
 module SolandraObject
   class Railtie < Rails::Railtie

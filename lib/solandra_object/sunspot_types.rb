@@ -8,20 +8,20 @@ module Sunspot
     # array will have to_s called on them.  Hopefully, this
     # returns something useful.
     #
-    class ArrayType < Sunspot::Type::AbstractType
-      def indexed_name(name) #:nodoc:
-        "#{name}_text"
-      end
-      
-      def to_indexed(value) #:nodoc:
-        value.collect {|v| v.to_s}.join("\t")
-      end
-      
-      def cast(string) #:nodoc:
-        string.split(/\t/)
-      end
-    end
-    Sunspot::Type.register ArrayType, Array
+    # class ArrayType < Sunspot::Type::AbstractType
+      # def indexed_name(name) #:nodoc:
+        # "#{name}_text"
+      # end
+#       
+      # def to_indexed(value) #:nodoc:
+        # value.collect {|v| v.to_s}.join("\t")
+      # end
+#       
+      # def cast(string) #:nodoc:
+        # string.split(/\t/)
+      # end
+    # end
+    # Sunspot::Type.register ArrayType, Array
     
     #
     # JSON is how Cassandra stores hashes.  For the purpose of

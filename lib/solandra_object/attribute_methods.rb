@@ -14,7 +14,12 @@ module SolandraObject
         
         if(searchable)
           searchable do
-            send type, name.to_s
+            options.delete :unique
+            if(type.to_s == 'array')
+              options[:multiple] = true
+              type = options.delete(:array_type) || "string"
+            end
+            send type, name.to_s, options
           end
         end
         
