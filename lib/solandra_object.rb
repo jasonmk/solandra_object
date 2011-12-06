@@ -8,6 +8,11 @@ module SolandraObject
   autoload :Validations
   autoload :Associations
   autoload :Reflection
+  autoload :Relation
+  
+  autoload_under 'relation' do
+    autoload :SearchMethods
+  end
 end
 
 require 'solandra_object/railtie' if defined?(Rails)
