@@ -1,7 +1,8 @@
 module SolandraObject
   class Relation
     include SearchMethods
-    attr_reader :klass, :column_family, :loaded?
+    attr_reader :klass, :column_family, :loaded
+    alias :loaded? :loaded
     
     def initialize(klass, column_family)
       @klass, @column_family = klass, column_family
@@ -25,6 +26,9 @@ module SolandraObject
     end
     alias :exists? :any?
     
+    # Returns the total number of entries that match the given search.
+    # This means the total number of matches regarless of page size.
+    # Compare with +size+.
     def count
       limit(1).to_a.total_entries
     end
@@ -73,7 +77,7 @@ module SolandraObject
       @results = []
     end
     
-    def initialize_copy
+    def initialize_copy(other)
       reset
     end
     
@@ -88,7 +92,10 @@ module SolandraObject
     # the number of results in the current page.  SolandraObject queries
     # default to a page size of 30
     def size
-      loaded? ? @results.size : count
+      return @results.size if loaded?
+      total_entries = count
+      page_size = sunspot_search.query.instance_variable_get(:@pagination).per_page
+      total_entries > page_size ? page_size : total_entries
     end
     
     # Aliased as +all+.  Actually executes the query if not already executed.
@@ -119,7 +126,7 @@ module SolandraObject
           to_a.send(method, *args, &block)
         elsif @klass.respond_to?(method)
           @klass.send(method, *args, &block)
-        elsif sunspot_search.repond_to?(method)
+        elsif sunspot_search.respond_to?(method)
           sunspot_search.send(method, *args, &block)
         else
           super

@@ -49,21 +49,23 @@ module SolandraObject
       def method_missing(method_id, *arguments, &block)
         
       end
+      
+      private
+        def relation #:nodoc:
+          @relation = Relation.new(self, column_family)
+        end
+        
+      protected
+        def current_scope #:nodoc:
+          Thread.current["#{self}_current_scope"]
+        end
+  
+        def current_scope=(scope) #:nodoc:
+          Thread.current["#{self}_current_scope"] = scope
+        end
     end
     
-    private
-      def relation #:nodoc:
-        @relation = Relation.new(self, column_family)
-      end
-      
-    protected
-      def current_scope #:nodoc:
-        Thread.current["#{self}_current_scope"]
-      end
-
-      def current_scope=(scope) #:nodoc:
-        Thread.current["#{self}_current_scope"] = scope
-      end
+    
       
       
   end
