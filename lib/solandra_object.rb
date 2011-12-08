@@ -14,6 +14,8 @@ module SolandraObject
   autoload_under 'relation' do
     autoload :SearchMethods
   end
+  
+  autoload :NamedScope
 end
 
 require 'solandra_object/railtie' if defined?(Rails)

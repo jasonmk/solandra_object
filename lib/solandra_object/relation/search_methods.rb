@@ -1,5 +1,20 @@
 module SolandraObject
   module SearchMethods
+    
+    # Used to extend a scope with additional methods, either through 
+    # a module or a block provided
+    #
+    # The object returned is a relation which can be further extended
+    def extending(*modules)
+      modules << Module.new(&Proc.new) if block_given?
+
+      return self if modules.empty?
+
+      relation = clone
+      relation.send(:apply_modules, modules.flatten)
+      relation
+    end
+    
     # Limit a single page to +value+ records
     def limit(value)
       clone.tap do |r|
