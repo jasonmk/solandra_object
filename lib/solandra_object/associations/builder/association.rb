@@ -23,6 +23,10 @@ module SolandraObject::Associations::Builder
       reflection
     end
     
+    def mixin
+      @model.generated_attribute_methods
+    end
+    
     private
       def validate_options
         options.assert_valid_keys(self.class.valid_options)

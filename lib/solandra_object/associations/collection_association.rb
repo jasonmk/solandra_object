@@ -48,9 +48,11 @@ module SolandraObject
       end
       
       def load_target
-        if find_target?
+        @target = find_target
+        loaded!
+        target
       end
-      
+            
       private
       
         # We have some records loaded from the database (persisted) and some that are

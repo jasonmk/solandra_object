@@ -1,4 +1,4 @@
-module ActiveRecord::Associations::Builder
+module SolandraObject::Associations::Builder
   class HasMany < CollectionAssociation #:nodoc:
     self.macro = :has_many
     

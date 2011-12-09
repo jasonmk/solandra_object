@@ -78,49 +78,49 @@ module SolandraObject
         #   end
         #
         # *Note*: the +:find+ scope also has effect on update and deletion methods, like +update_all+ and +delete_all+.
-        def with_scope(scope = {}, action = :merge, &block)
-          # If another Active Record class has been passed in, get its current scope
-          scope = scope.current_scope if !scope.is_a?(Relation) && scope.respond_to?(:current_scope)
-
-          previous_scope = self.current_scope
-
-          if scope.is_a?(Hash)
-            # Dup first and second level of hash (method and params).
-            scope = scope.dup
-            scope.each do |method, params|
-              scope[method] = params.dup unless params == true
-            end
-
-            scope.assert_valid_keys([ :find, :create ])
-            relation = construct_finder_arel(scope[:find] || {})
-            relation.default_scoped = true unless action == :overwrite
-
-            if previous_scope && previous_scope.create_with_value && scope[:create]
-              scope_for_create = if action == :merge
-                previous_scope.create_with_value.merge(scope[:create])
-              else
-                scope[:create]
-              end
-
-              relation = relation.create_with(scope_for_create)
-            else
-              scope_for_create = scope[:create]
-              scope_for_create ||= previous_scope.create_with_value if previous_scope
-              relation = relation.create_with(scope_for_create) if scope_for_create
-            end
-
-            scope = relation
-          end
-
-          scope = previous_scope.merge(scope) if previous_scope && action == :merge
-
-          self.current_scope = scope
-          begin
-            yield
-          ensure
-            self.current_scope = previous_scope
-          end
-        end
+        # def with_scope(scope = {}, action = :merge, &block)
+          # # If another Active Record class has been passed in, get its current scope
+          # scope = scope.current_scope if !scope.is_a?(Relation) && scope.respond_to?(:current_scope)
+# 
+          # previous_scope = self.current_scope
+# 
+          # if scope.is_a?(Hash)
+            # # Dup first and second level of hash (method and params).
+            # scope = scope.dup
+            # scope.each do |method, params|
+              # scope[method] = params.dup unless params == true
+            # end
+# 
+            # scope.assert_valid_keys([ :find, :create ])
+            # relation = construct_finder_arel(scope[:find] || {})
+            # relation.default_scoped = true unless action == :overwrite
+# 
+            # if previous_scope && previous_scope.create_with_value && scope[:create]
+              # scope_for_create = if action == :merge
+                # previous_scope.create_with_value.merge(scope[:create])
+              # else
+                # scope[:create]
+              # end
+# 
+              # relation = relation.create_with(scope_for_create)
+            # else
+              # scope_for_create = scope[:create]
+              # scope_for_create ||= previous_scope.create_with_value if previous_scope
+              # relation = relation.create_with(scope_for_create) if scope_for_create
+            # end
+# 
+            # scope = relation
+          # end
+# 
+          # scope = previous_scope.merge(scope) if previous_scope && action == :merge
+# 
+          # self.current_scope = scope
+          # begin
+            # yield
+          # ensure
+            # self.current_scope = previous_scope
+          # end
+        # end
 
 
 

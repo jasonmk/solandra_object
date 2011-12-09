@@ -4,8 +4,10 @@ module SolandraObject
     extend ActiveSupport::Autoload
     
     autoload :Association
+    autoload :AssociationScope
     autoload :SingularAssociation
     autoload :CollectionAssociation
+    autoload :CollectionProxy
     autoload :BelongsToAssociation
     autoload :HasOneAssociation
     autoload :HasManyAssociation
