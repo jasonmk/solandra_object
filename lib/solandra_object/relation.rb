@@ -33,6 +33,13 @@ module SolandraObject
       limit(1).to_a.total_entries
     end
     
+    # Gets a default scope with no conditions or search attributes set.
+    def default_scope
+      clone.tap do |r|
+        r.instance_variable_set(:@search, nil)
+      end
+    end
+    
     def first
       if loaded?
         @records.first
@@ -107,6 +114,7 @@ module SolandraObject
       @results
     end
     alias :all :to_a
+    alias :results :to_a
     
     def respond_to?(method, include_private = false)
       sunspot_search.respond_to?(method, include_private)   ||

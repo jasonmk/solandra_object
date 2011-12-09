@@ -5,17 +5,21 @@ module SolandraObject
     
     autoload :Association
     autoload :SingularAssociation
+    autoload :CollectionAssociation
     autoload :BelongsToAssociation
     autoload :HasOneAssociation
+    autoload :HasManyAssociation
     
     module Builder
       extend ActiveSupport::Autoload
       
       autoload :Association
       autoload :SingularAssociation
+      autoload :CollectionAssociation
       
       autoload :BelongsTo
       autoload :HasOne
+      autoload :HasMany
     end
     
     # Clears out the association cache.
@@ -58,7 +62,7 @@ module SolandraObject
       end
       
       def has_many(name, options = {})
-        
+        Builder::HasMany.build(self, name, options)
       end
       
       def has_and_belongs_to_many(name, options = {})

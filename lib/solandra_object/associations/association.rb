@@ -57,6 +57,14 @@ module SolandraObject
         loaded!
       end
       
+      def scoped
+        target_scope.where(reflection.foreign_key, owner.id)
+      end
+      
+      def reset_scope
+        @association_scope = nil
+      end
+      
       def set_inverse_instance(record)
         if record && invertible_for?(record)
           inverse = record.association(inverse_reflection_for(record).name)
@@ -66,6 +74,10 @@ module SolandraObject
       
       def klass
         reflection.klass
+      end
+      
+      def target_scope
+        klass.scoped
       end
       
       def load_target

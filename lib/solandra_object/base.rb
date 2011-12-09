@@ -1,5 +1,5 @@
 require 'jkusar-cassandra_object'
-require 'activerecord/dynamic_finder_match'
+require 'active_record/dynamic_finder_match'
 module SolandraObject
   class Base < ::CassandraObject::Base
     include AttributeMethods
@@ -27,7 +27,7 @@ module SolandraObject
     class << self
       delegate :first, :all, :exists?, :any?, :many?, :to => :scoped
       delegate :destroy, :destroy_all, :delete, :delete_all, :update, :update_all, :to => :scoped
-      delegate :find_each, :find_in_batches, :to => :scoped
+      # delegate :find_each, :find_in_batches, :to => :scoped
       delegate :order, :limit, :offset, :where, :to => :scoped
       delegate :count, :to => :scoped
       
