@@ -65,6 +65,13 @@ module SolandraObject
       
       def has_many(name, options = {})
         Builder::HasMany.build(self, name, options)
+        # klass = options[:class_name]
+        # klass ||= name.to_s.singularize
+        # foreign_key = options[:foreign_key]
+        # foreign_key ||= self.name.foreign_key
+        # define_method name do
+          # klass.where(foreign_key)
+        # end
       end
       
       def has_and_belongs_to_many(name, options = {})

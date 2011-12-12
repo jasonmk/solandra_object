@@ -8,10 +8,13 @@ module SolandraObject
     include Associations
     include NamedScope
     include ActiveModel::MassAssignmentSecurity
+    include ActiveModel::Validations::Callbacks
     
-    def initialize(attributes = nil, options = {})
+    def initialize(attributes = {})
+      @key = attributes.delete(:key)
+      @attributes = {}
       sanitize_for_mass_assignment(attributes).each do |k,v|
-        if respond_to?("#{k.downcase}=")
+        if respond_to?("#{k.to_s.downcase}=")
           send("#{k.downcase}=",v)
         else
           raise(UnknownAttributeError, "unknown attribute: #{k}")
@@ -22,6 +25,7 @@ module SolandraObject
       @destroyed = false
       @previously_changed = {}
       @changed_attributes = {}
+      @schema_version = self.class.current_schema_version
     end
     
     class << self
@@ -70,6 +74,16 @@ module SolandraObject
       #   end
       # end
       
+      # Freeze the attributes hash such that associations are still accessible, even on destroyed records.
+      def freeze
+        @attributes.freeze; self
+      end
+
+      # Returns +true+ if the attributes hash has been frozen.
+      def frozen?
+        @attributes.frozen?
+      end
+      
       private
         def relation #:nodoc:
           @relation = Relation.new(self, column_family)
@@ -84,9 +98,5 @@ module SolandraObject
           Thread.current["#{self}_current_scope"] = scope
         end
     end
-    
-    
-      
-      
   end
 end

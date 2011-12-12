@@ -16,6 +16,8 @@ module SolandraObject
         if force_reload || stale_target?
           reload
         end
+        
+        proxy
       end
       
       # Implements the writer method, e.g. foo.items= for Foo.has_many :items
