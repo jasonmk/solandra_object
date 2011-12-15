@@ -13,19 +13,21 @@ module SolandraObject
     def initialize(attributes = {})
       @key = attributes.delete(:key)
       @attributes = {}
-      sanitize_for_mass_assignment(attributes).each do |k,v|
-        if respond_to?("#{k.to_s.downcase}=")
-          send("#{k.downcase}=",v)
-        else
-          raise(UnknownAttributeError, "unknown attribute: #{k}")
-        end
-      end
+      
       @relation = nil
       @new_record = true
       @destroyed = false
       @previously_changed = {}
       @changed_attributes = {}
       @schema_version = self.class.current_schema_version
+      
+      sanitize_for_mass_assignment(attributes).each do |k,v|
+        if respond_to?("#{k.to_s.downcase}=")
+          send("#{k.to_s.downcase}=",v)
+        else
+          raise(UnknownAttributeError, "unknown attribute: #{k}")
+        end
+      end
     end
     
     class << self
