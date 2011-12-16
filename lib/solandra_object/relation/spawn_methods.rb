@@ -1,5 +1,9 @@
 module SolandraObject
   module SpawnMethods
+    def scoped
+      self
+    end
+    
     def merge(r)
       return self unless r
       return to_a & r if r.is_a?(Array)

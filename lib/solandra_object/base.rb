@@ -30,11 +30,21 @@ module SolandraObject
       end
     end
     
+    # Freeze the attributes hash such that associations are still accessible, even on destroyed records.
+    def freeze
+      @attributes.freeze; self
+    end
+
+    # Returns +true+ if the attributes hash has been frozen.
+    def frozen?
+      @attributes.frozen?
+    end
+    
     class << self
       delegate :first, :all, :exists?, :any?, :many?, :to => :scoped
       delegate :destroy, :destroy_all, :delete, :delete_all, :update, :update_all, :to => :scoped
       # delegate :find_each, :find_in_batches, :to => :scoped
-      delegate :order, :limit, :offset, :where, :to => :scoped
+      delegate :order, :limit, :offset, :where, :page, :per_page, :each, :group, :to => :scoped
       delegate :count, :to => :scoped
       
       # Enables dynamic finders like <tt>User.find_by_user_name(user_name)</tt> and
@@ -75,16 +85,6 @@ module SolandraObject
       #     super
       #   end
       # end
-      
-      # Freeze the attributes hash such that associations are still accessible, even on destroyed records.
-      def freeze
-        @attributes.freeze; self
-      end
-
-      # Returns +true+ if the attributes hash has been frozen.
-      def frozen?
-        @attributes.frozen?
-      end
       
       private
         def relation #:nodoc:

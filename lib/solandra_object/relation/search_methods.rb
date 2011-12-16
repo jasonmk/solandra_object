@@ -37,6 +37,16 @@ module SolandraObject
       end
     end
     
+    # Group results by one or more attributes only returning the top result
+    # for each group.
+    def group(*attrs)
+      return self if attrs.empty?
+      
+      clone.tap do |r|
+        r.sunspot_search.build { group attrs }
+      end
+    end
+    
     # Orders the result set by a particular attribute.  Note that text fields
     # may not be used for ordering as they are tokenized.  Valid candidates
     # are fields of type +string+, +integer+, +long+, +float+, +double+, and
