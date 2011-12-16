@@ -30,7 +30,11 @@ module SolandraObject
     # This means the total number of matches regarless of page size.
     # Compare with +size+.
     def count
-      limit(1).to_a.total_entries
+      if loaded?
+        @records.total_entries
+      else
+        limit(1).to_a.total_entries
+      end
     end
     
     # Gets a default scope with no conditions or search attributes set.
@@ -103,6 +107,10 @@ module SolandraObject
       total_entries = count
       page_size = sunspot_search.query.instance_variable_get(:@pagination).per_page
       total_entries > page_size ? page_size : total_entries
+    end
+    
+    def total_pages
+      (count / page_size.to_f).ceil
     end
     
     # Aliased as +all+.  Actually executes the query if not already executed.
