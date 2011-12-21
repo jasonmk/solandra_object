@@ -17,7 +17,14 @@ Of course you need a solr/solandra instance running to use this.
 They also need to be properly configured. Create a default config file
 for sunspot_rails like this:
 
-@rails generate sunspot_rails:install@
+  rails generate sunspot_rails:install
+
+Then edit config/sunspot.yml appropriately. You might need to set the
+path option for solr like
+
+  path: /solandra
+
+when using Solandra (you will get 404 errors if this setting is incorrect).
 
 === Example
 
