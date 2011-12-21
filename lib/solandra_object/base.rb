@@ -39,13 +39,17 @@ module SolandraObject
     def frozen?
       @attributes.frozen?
     end
-    
+
     class << self
       delegate :first, :all, :exists?, :any?, :many?, :to => :scoped
       delegate :destroy, :destroy_all, :delete, :delete_all, :update, :update_all, :to => :scoped
       # delegate :find_each, :find_in_batches, :to => :scoped
       delegate :order, :limit, :offset, :where, :page, :per_page, :each, :group, :total_pages, :to => :scoped
       delegate :count, :to => :scoped
+
+      def logger
+	Rails.logger
+      end
       
       # Enables dynamic finders like <tt>User.find_by_user_name(user_name)</tt> and
       # <tt>User.scoped_by_user_name(user_name). Refer to Dynamic attribute-based finders

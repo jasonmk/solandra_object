@@ -13,6 +13,19 @@ Add the following to your Gemfile:
 
 Change version numbers as appropriate.
 
+Of course you need a solr/solandra instance running to use this.
+They also need to be properly configured. Create a default config file
+for sunspot_rails like this:
+
+  rails generate sunspot_rails:install
+
+Then edit config/sunspot.yml appropriately. You might need to set the
+path option for solr like
+
+  path: /solandra
+
+when using Solandra (you will get 404 errors if this setting is incorrect).
+
 === Example
 
   class Category < SolandraObject::Base
@@ -22,3 +35,6 @@ Change version numbers as appropriate.
     array :sub_categories, :unique => true
     json :extra_attributes
   end
+
+For more examples and instructions on how to use this, consult the documentation 
+for sunspot, sunspot_rails, cassandra_object and solandra.
