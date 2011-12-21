@@ -35,3 +35,6 @@ when using Solandra (you will get 404 errors if this setting is incorrect).
     array :sub_categories, :unique => true
     json :extra_attributes
   end
+
+For more examples and instructions on how to use this, consult the documentation 
+for sunspot, sunspot_rails, cassandra_object and solandra.
