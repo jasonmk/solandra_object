@@ -9,4 +9,12 @@ namespace :so do
       http.post(path, schema_file)
     end
   end
+  
+  desc 'Reindex all Cassandra data into Solandra'
+  task :reindex => :environment do
+    Sunspot.remove_all!
+    Rails.root.join("app","models").entries.grep(/\.rb$/).each do |e|
+      e.to_s.split(/\./).first.camelize.constantize.reindex
+    end
+  end
 end
