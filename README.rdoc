@@ -13,6 +13,12 @@ Add the following to your Gemfile:
 
 Change version numbers as appropriate.
 
+Of course you need a solr/solandra instance running to use this.
+They also need to be properly configured. Create a default config file
+for sunspot_rails like this:
+
+@rails generate sunspot_rails:install@
+
 === Example
 
   class Category < SolandraObject::Base
