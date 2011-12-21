@@ -26,6 +26,11 @@ path option for solr like
 
 when using Solandra (you will get 404 errors if this setting is incorrect).
 
+Configure solandra with the SolandraObject schema:
+
+  rake so:create_solr
+  rake so:create_solr RAILS_ENV=test
+
 === Example
 
   class Category < SolandraObject::Base
