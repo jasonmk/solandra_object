@@ -10,5 +10,9 @@ module SolandraObject
         include(Sunspot::Rails::Searchable)
       end
     end
+    
+    rake_tasks do
+      load 'tasks/solandra_object_tasks.rake'
+    end
   end
 end
