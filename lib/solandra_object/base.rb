@@ -3,6 +3,7 @@ require 'active_record/dynamic_finder_match'
 module SolandraObject
   class Base < ::CassandraObject::Base
     include AttributeMethods
+    include FinderMethods
     include Validations
     include Reflection
     include Associations

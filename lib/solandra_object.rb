@@ -5,6 +5,7 @@ module SolandraObject
   
   autoload :Base
   autoload :AttributeMethods
+  autoload :FinderMethods
   autoload :SunspotAdapters
   autoload :Validations
   autoload :Associations

@@ -41,7 +41,7 @@ module SolandraObject
       # SolandraObject::Base:: SolandraObject model
       #
       def load(id)
-        @clazz.find(id)
+        @clazz.multi_find([id])
       end
       
       # 
@@ -55,11 +55,8 @@ module SolandraObject
       #
       # Array:: Collection of SolandraObject models
       #
-      # FIXME: This is probably not the most efficient way to do this, but until
-      #        I have more of an understanding how Cassandra searches work, it's
-      #        all I could come up with. -JMK
       def load_all(ids)
-        ids.collect {|id| @clazz.find(id)}
+        @clazz.multi_find(ids)
       end
 
       private
