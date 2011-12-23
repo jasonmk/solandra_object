@@ -6,7 +6,9 @@ describe SolandraObject::Relation do
   end
   
   describe "#==" do
-    
+    it "should count two relations with the same parameters as equal" do
+      @relation.where("name","jason").should == @relation.where("name","jason")
+    end
   end
   
   describe "#any?" do

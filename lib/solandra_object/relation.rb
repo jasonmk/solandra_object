@@ -12,7 +12,7 @@ module SolandraObject
     
     # Returns true if the two relations have the same query parameters
     def ==(other)
-      self.search.query.to_params == other.search.query.to_params
+      self.sunspot_search.query.to_params == other.sunspot_search.query.to_params
     end
     
     # Returns true if there are any results given the current criteria
