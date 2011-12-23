@@ -89,11 +89,11 @@ module SolandraObject
       @results = []
     end
     
-    def initialize_copy(other)
+    def initialize_copy(other) #:nodoc:
       reset
     end
     
-    def clone
+    def clone #:nodoc:
       relation = dup
       relation.instance_variable_set(:@search, @search.clone) if @search
       relation
@@ -126,7 +126,7 @@ module SolandraObject
     alias :all :to_a
     alias :results :to_a
     
-    def respond_to?(method, include_private = false)
+    def respond_to?(method, include_private = false) #:nodoc:
       sunspot_search.respond_to?(method, include_private)   ||
         Array.method_defined?(method)                       ||
         @klass.respond_to?(method, include_private)         ||
