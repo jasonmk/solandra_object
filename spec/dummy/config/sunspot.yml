@@ -1,0 +1,17 @@
+development:
+  solr:
+    hostname: localhost
+    port: 8983
+    path: /solandra/solandra_object_development
+test:
+  solr:
+    hostname: localhost
+    port: 8983
+    path: /solandra/solandra_object_test
+    log_level: OFF
+production:
+  solr:
+    hostname: localhost
+    port: 8983
+    path: /solandra/solandra_object_production
+    log_level: WARNING

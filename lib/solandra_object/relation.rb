@@ -16,7 +16,6 @@ module SolandraObject
     end
     
     # Returns true if there are any results given the current criteria
-    # Aliased as +exists?+
     def any?
       if block_given?
         to_a.any? { |*block_args| yield(*block_args) }
@@ -27,11 +26,11 @@ module SolandraObject
     alias :exists? :any?
     
     # Returns the total number of entries that match the given search.
-    # This means the total number of matches regarless of page size.
+    # This means the total number of matches regardless of page size.
     # Compare with +size+.
     def count
       if loaded?
-        @records.total_entries
+        @results.total_entries
       else
         limit(1).to_a.total_entries
       end
@@ -44,11 +43,13 @@ module SolandraObject
       end
     end
     
+    # Returns the first record from the result set if it's already loaded.
+    # Otherwise, runs the search with a limit of 1 and returns that.
     def first
-      if loaded?
-        @records.first
+      @first ||= if loaded?
+        @results.first
       else
-        @first ||= limit(1).to_a[0]
+        limit(1).to_a.first
       end
     end
     
@@ -65,7 +66,7 @@ module SolandraObject
       if block_given?
         to_a.many? { |*block_args| yield(*block_args) }
       else
-        @limit_value ? to_a.many? : size > 1
+        count > 1
       end
     end
     
@@ -105,15 +106,16 @@ module SolandraObject
     def size
       return @results.size if loaded?
       total_entries = count
-      page_size = sunspot_search.query.instance_variable_get(:@pagination).per_page
       total_entries > page_size ? page_size : total_entries
     end
     
+    # Returns the total number of pages required to display the results
+    # given the current page size.  Used by will_paginate.
     def total_pages
       (count / page_size.to_f).ceil
     end
     
-    # Aliased as +all+.  Actually executes the query if not already executed.
+    # Actually executes the query if not already executed.
     # Returns a standard array thus no more methods may be chained.
     def to_a
       return @results if loaded?
@@ -137,6 +139,11 @@ module SolandraObject
     end
     
     protected
+    
+      def page_size
+        sunspot_search.query.instance_variable_get(:@pagination).per_page
+      end
+      
       def method_missing(method, *args, &block)
         if Array.method_defined?(method)
           to_a.send(method, *args, &block)

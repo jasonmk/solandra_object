@@ -155,6 +155,12 @@ dd {
   padding: 3px 3px 3px 18px;
 }
 
+dd .duration {
+  padding-left: 5px;
+  text-align: right;
+  right: 0px;
+  float:right;
+}
 
 dd.example.passed {
   border-left: 5px solid #65C400;
@@ -278,47 +284,151 @@ a {
 <div class="results">
 <div id="div_group_1" class="example_group passed">
   <dl style="margin-left: 0px;">
-  <dt id="example_group_1" class="passed">Sunspot::Type</dt>
+  <dt id="example_group_1" class="passed">SolandraObject::Base</dt>
+    <script type="text/javascript">moveProgressBar('4.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should automatically declare string fields as searchable</span><span class='duration'>0.04711s</span></dd>
+    <script type="text/javascript">moveProgressBar('8.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should not declare fields as searchable if told not to</span><span class='duration'>0.02519s</span></dd>
+    <script type="text/javascript">moveProgressBar('12.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should add unqiue_id to the Sunspot config automatically</span><span class='duration'>0.02519s</span></dd>
   </dl>
 </div>
 <div id="div_group_2" class="example_group passed">
-  <dl style="margin-left: 15px;">
-  <dt id="example_group_2" class="passed">Sunspot::Type::ArrayType</dt>
-    <script type="text/javascript">moveProgressBar('12.5');</script>
-    <dd class="example passed"><span class="passed_spec_name">assigns an indexed name for solr to recognize</span></dd>
-    <script type="text/javascript">moveProgressBar('25.0');</script>
-    <dd class="example passed"><span class="passed_spec_name">should convert an array to a tab separated list</span></dd>
-    <script type="text/javascript">moveProgressBar('37.5');</script>
-    <dd class="example passed"><span class="passed_spec_name">should convert a string back into an array</span></dd>
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_2" class="passed">Sunspot::Type</dt>
   </dl>
 </div>
 <div id="div_group_3" class="example_group passed">
   <dl style="margin-left: 15px;">
   <dt id="example_group_3" class="passed">Sunspot::Type::JsonType</dt>
-    <script type="text/javascript">moveProgressBar('50.0');</script>
-    <dd class="example passed"><span class="passed_spec_name">inherits behavior from Sunspot's TextType</span></dd>
+    <script type="text/javascript">moveProgressBar('16.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">inherits behavior from Sunspot's TextType</span><span class='duration'>0.02469s</span></dd>
   </dl>
 </div>
 <div id="div_group_4" class="example_group passed">
   <dl style="margin-left: 0px;">
-  <dt id="example_group_4" class="passed">SolandraObject::Base</dt>
-    <script type="text/javascript">moveProgressBar('62.5');</script>
-    <dd class="example passed"><span class="passed_spec_name">should inherit from CassandraObject::Base</span></dd>
+  <dt id="example_group_4" class="passed">SolandraObject::Relation</dt>
   </dl>
 </div>
 <div id="div_group_5" class="example_group passed">
-  <dl style="margin-left: 0px;">
-  <dt id="example_group_5" class="passed">SolandraObject::Base</dt>
-    <script type="text/javascript">moveProgressBar('75.0');</script>
-    <dd class="example passed"><span class="passed_spec_name">should automatically declare string fields as searchable</span></dd>
-    <script type="text/javascript">moveProgressBar('87.5');</script>
-    <dd class="example passed"><span class="passed_spec_name">should not declare fields as searchable if told not to</span></dd>
-    <script type="text/javascript">moveProgressBar('100.0');</script>
-    <dd class="example passed"><span class="passed_spec_name">should add unqiue_id to the Sunspot config automatically</span></dd>
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_5" class="passed">#any?</dt>
+    <script type="text/javascript">moveProgressBar('20.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should return true if there are records</span><span class='duration'>0.26035s</span></dd>
+    <script type="text/javascript">moveProgressBar('24.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should return false if there are no records</span><span class='duration'>0.03319s</span></dd>
   </dl>
 </div>
-<script type="text/javascript">document.getElementById('duration').innerHTML = "Finished in <strong>1.577684 seconds</strong>";</script>
-<script type="text/javascript">document.getElementById('totals').innerHTML = "8 examples, 0 failures";</script>
+<div id="div_group_6" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_6" class="passed">#count</dt>
+    <script type="text/javascript">moveProgressBar('28.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should use the currently loaded result set to get count</span><span class='duration'>0.02547s</span></dd>
+    <script type="text/javascript">moveProgressBar('32.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should execute a fast search to determine the count</span><span class='duration'>0.02552s</span></dd>
+    <script type="text/javascript">moveProgressBar('36.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should return the count regardless of limit</span><span class='duration'>0.47364s</span></dd>
+  </dl>
+</div>
+<div id="div_group_7" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_7" class="passed">#default_scope</dt>
+    <script type="text/javascript">moveProgressBar('40.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should return a relation that has no scope set</span><span class='duration'>0.21366s</span></dd>
+  </dl>
+</div>
+<div id="div_group_8" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_8" class="passed">#first</dt>
+    <script type="text/javascript">moveProgressBar('44.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should return the first result if records are already loaded</span><span class='duration'>0.03104s</span></dd>
+    <script type="text/javascript">moveProgressBar('48.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should look up the first result if records are not already loaded</span><span class='duration'>0.02971s</span></dd>
+    <script type="text/javascript">moveProgressBar('52.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should store the first record in @first</span><span class='duration'>0.03019s</span></dd>
+  </dl>
+</div>
+<div id="div_group_9" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_9" class="passed">#empty?</dt>
+    <script type="text/javascript">moveProgressBar('56.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should use the loaded result set to determine emptiness</span><span class='duration'>0.02939s</span></dd>
+  </dl>
+</div>
+<div id="div_group_10" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_10" class="passed">#many?</dt>
+    <script type="text/javascript">moveProgressBar('60.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should return true if there are multiple records matching</span><span class='duration'>0.22492s</span></dd>
+    <script type="text/javascript">moveProgressBar('64.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should return false if there are zero or one records matching</span><span class='duration'>0.38187s</span></dd>
+  </dl>
+</div>
+<div id="div_group_11" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_11" class="passed">#new</dt>
+    <script type="text/javascript">moveProgressBar('68.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should instantiate a new instance of the class</span><span class='duration'>0.02781s</span></dd>
+  </dl>
+</div>
+<div id="div_group_12" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_12" class="passed">#reload</dt>
+    <script type="text/javascript">moveProgressBar('72.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should reload the results</span><span class='duration'>0.24822s</span></dd>
+  </dl>
+</div>
+<div id="div_group_13" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_13" class="passed">#size</dt>
+    <script type="text/javascript">moveProgressBar('76.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should return the size of the current result set (including limit setting)</span><span class='duration'>0.25098s</span></dd>
+  </dl>
+</div>
+<div id="div_group_14" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_14" class="passed">#total_pages</dt>
+    <script type="text/javascript">moveProgressBar('80.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should calculate the total number of pages for will_paginate</span><span class='duration'>0.02623s</span></dd>
+  </dl>
+</div>
+<div id="div_group_15" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_15" class="passed">SolandraObject::Base</dt>
+  </dl>
+</div>
+<div id="div_group_16" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_16" class="passed">Finder methods</dt>
+    <script type="text/javascript">moveProgressBar('84.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should find by an array of ids</span><span class='duration'>0.37945s</span></dd>
+    <script type="text/javascript">moveProgressBar('88.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should skip ids that don't exist</span><span class='duration'>0.28575s</span></dd>
+    <script type="text/javascript">moveProgressBar('92.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should remove invalid records from Sunspot</span><span class='duration'>0.23399s</span></dd>
+  </dl>
+</div>
+<div id="div_group_17" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_17" class="passed">SolandraObject::Base</dt>
+    <script type="text/javascript">moveProgressBar('96.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should inherit from CassandraObject::Base</span><span class='duration'>0.02613s</span></dd>
+  </dl>
+</div>
+<div id="div_group_18" class="example_group passed">
+  <dl style="margin-left: 0px;">
+  <dt id="example_group_18" class="passed">SolandraObject::Base</dt>
+  </dl>
+</div>
+<div id="div_group_19" class="example_group passed">
+  <dl style="margin-left: 15px;">
+  <dt id="example_group_19" class="passed">uniqueness validation</dt>
+    <script type="text/javascript">moveProgressBar('100.0');</script>
+    <dd class="example passed"><span class="passed_spec_name">should validate uniqueness</span><span class='duration'>0.37107s</span></dd>
+  </dl>
+</div>
+<script type="text/javascript">document.getElementById('duration').innerHTML = "Finished in <strong>3.74091 seconds</strong>";</script>
+<script type="text/javascript">document.getElementById('totals').innerHTML = "25 examples, 0 failures";</script>
 </div>
 </div>
 </body>

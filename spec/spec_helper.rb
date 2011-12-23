@@ -11,4 +11,14 @@ ENGINE_RAILS_ROOT=File.join(File.dirname(__FILE__), '../')
 Dir[File.join(ENGINE_RAILS_ROOT, "spec/support/**/*.rb")].each {|f| require f }
 
 RSpec.configure do |config|
+  config.before(:each) do
+    SolandraObject::Base.recorded_classes = {}
+  end
+  
+  config.after(:each) do
+    Sunspot.remove_all!
+    SolandraObject::Base.recorded_classes.keys.each do |klass|
+      SolandraObject::Base.connection.truncate!(klass.column_family.to_sym)
+    end
+  end
 end

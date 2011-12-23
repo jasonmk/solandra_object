@@ -49,7 +49,7 @@ module SolandraObject
       delegate :count, :to => :scoped
 
       def logger
-	Rails.logger
+        Rails.logger
       end
       
       # Enables dynamic finders like <tt>User.find_by_user_name(user_name)</tt> and

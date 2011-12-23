@@ -18,8 +18,9 @@ Gem::Specification.new do |s|
 
   s.add_dependency "rails", "~> 3.1.1"
   s.add_dependency "jkusar-cassandra_object", "~> 2.8.0"
-  s.add_dependency "sunspot_rails", "~> 1.2.1"
+  s.add_dependency "sunspot_rails", "~> 1.3.0"
 
-  s.add_development_dependency "rspec-rails", "~> 2.7.0"
+  s.add_development_dependency "rspec-rails", "~> 2.8.0.pre2"
   s.add_development_dependency "ruby-debug"
+  s.add_development_dependency "rcov"
 end

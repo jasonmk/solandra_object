@@ -1,4 +1,6 @@
+require 'active_support'
 require 'solandra_object'
+require 'solandra_object/base'
 module SolandraObject
   class Base
     class_attribute :recorded_classes

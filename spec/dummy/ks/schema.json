@@ -1,0 +1,162 @@
+{
+  "name": "solandra_object_test",
+  "replication_factor": 1,
+  "strategy_class": "org.apache.cassandra.locator.SimpleStrategy",
+  "durable_writes": true,
+  "strategy_options": {
+    "replication_factor": "1",
+    "DC1": "1"
+  },
+  "cf_defs": [
+    {
+      "name": "jobs",
+      "comment": "Jobs",
+      "gc_grace_seconds": 864000,
+      "key_cache_size": 200000.0,
+      "column_metadata": [
+
+      ],
+      "max_compaction_threshold": 32,
+      "row_cache_size": 0.0,
+      "merge_shards_chance": 0.1,
+      "default_validation_class": "org.apache.cassandra.db.marshal.BytesType",
+      "id": 1065,
+      "column_type": "Standard",
+      "comparator_type": "org.apache.cassandra.db.marshal.BytesType",
+      "key_alias": "KEY",
+      "row_cache_save_period_in_seconds": 0,
+      "keyspace": "solandra_object_test",
+      "min_compaction_threshold": 4,
+      "read_repair_chance": 1.0,
+      "key_validation_class": "org.apache.cassandra.db.marshal.BytesType",
+      "key_cache_save_period_in_seconds": 14400,
+      "replicate_on_write": true,
+      "row_cache_provider": "org.apache.cassandra.cache.ConcurrentLinkedHashCacheProvider"
+    },
+    {
+      "name": "schema_migrations",
+      "comment": "",
+      "gc_grace_seconds": 864000,
+      "key_cache_size": 200000.0,
+      "column_metadata": [
+
+      ],
+      "max_compaction_threshold": 32,
+      "row_cache_size": 0.0,
+      "merge_shards_chance": 0.1,
+      "default_validation_class": "org.apache.cassandra.db.marshal.BytesType",
+      "id": 1055,
+      "column_type": "Standard",
+      "comparator_type": "org.apache.cassandra.db.marshal.LongType",
+      "key_alias": "KEY",
+      "row_cache_save_period_in_seconds": 0,
+      "keyspace": "solandra_object_test",
+      "min_compaction_threshold": 4,
+      "read_repair_chance": 1.0,
+      "key_validation_class": "org.apache.cassandra.db.marshal.BytesType",
+      "key_cache_save_period_in_seconds": 14400,
+      "replicate_on_write": true,
+      "row_cache_provider": "org.apache.cassandra.cache.ConcurrentLinkedHashCacheProvider"
+    },
+    {
+      "name": "cars",
+      "comment": "Cars",
+      "gc_grace_seconds": 864000,
+      "key_cache_size": 200000.0,
+      "column_metadata": [
+
+      ],
+      "max_compaction_threshold": 32,
+      "row_cache_size": 0.0,
+      "merge_shards_chance": 0.1,
+      "default_validation_class": "org.apache.cassandra.db.marshal.BytesType",
+      "id": 1064,
+      "column_type": "Standard",
+      "comparator_type": "org.apache.cassandra.db.marshal.BytesType",
+      "key_alias": "KEY",
+      "row_cache_save_period_in_seconds": 0,
+      "keyspace": "solandra_object_test",
+      "min_compaction_threshold": 4,
+      "read_repair_chance": 1.0,
+      "key_validation_class": "org.apache.cassandra.db.marshal.BytesType",
+      "key_cache_save_period_in_seconds": 14400,
+      "replicate_on_write": true,
+      "row_cache_provider": "org.apache.cassandra.cache.ConcurrentLinkedHashCacheProvider"
+    },
+    {
+      "name": "boats",
+      "comment": "Boats",
+      "gc_grace_seconds": 864000,
+      "key_cache_size": 200000.0,
+      "column_metadata": [
+
+      ],
+      "max_compaction_threshold": 32,
+      "row_cache_size": 0.0,
+      "merge_shards_chance": 0.1,
+      "default_validation_class": "org.apache.cassandra.db.marshal.BytesType",
+      "id": 1066,
+      "column_type": "Standard",
+      "comparator_type": "org.apache.cassandra.db.marshal.BytesType",
+      "key_alias": "KEY",
+      "row_cache_save_period_in_seconds": 0,
+      "keyspace": "solandra_object_test",
+      "min_compaction_threshold": 4,
+      "read_repair_chance": 1.0,
+      "key_validation_class": "org.apache.cassandra.db.marshal.BytesType",
+      "key_cache_save_period_in_seconds": 14400,
+      "replicate_on_write": true,
+      "row_cache_provider": "org.apache.cassandra.cache.ConcurrentLinkedHashCacheProvider"
+    },
+    {
+      "name": "hobbies",
+      "comment": "Hobbies",
+      "gc_grace_seconds": 864000,
+      "key_cache_size": 200000.0,
+      "column_metadata": [
+
+      ],
+      "max_compaction_threshold": 32,
+      "row_cache_size": 0.0,
+      "merge_shards_chance": 0.1,
+      "default_validation_class": "org.apache.cassandra.db.marshal.BytesType",
+      "id": 1067,
+      "column_type": "Standard",
+      "comparator_type": "org.apache.cassandra.db.marshal.BytesType",
+      "key_alias": "KEY",
+      "row_cache_save_period_in_seconds": 0,
+      "keyspace": "solandra_object_test",
+      "min_compaction_threshold": 4,
+      "read_repair_chance": 1.0,
+      "key_validation_class": "org.apache.cassandra.db.marshal.BytesType",
+      "key_cache_save_period_in_seconds": 14400,
+      "replicate_on_write": true,
+      "row_cache_provider": "org.apache.cassandra.cache.ConcurrentLinkedHashCacheProvider"
+    },
+    {
+      "name": "people",
+      "comment": "People",
+      "gc_grace_seconds": 864000,
+      "key_cache_size": 200000.0,
+      "column_metadata": [
+
+      ],
+      "max_compaction_threshold": 32,
+      "row_cache_size": 0.0,
+      "merge_shards_chance": 0.1,
+      "default_validation_class": "org.apache.cassandra.db.marshal.BytesType",
+      "id": 1063,
+      "column_type": "Standard",
+      "comparator_type": "org.apache.cassandra.db.marshal.BytesType",
+      "key_alias": "KEY",
+      "row_cache_save_period_in_seconds": 0,
+      "keyspace": "solandra_object_test",
+      "min_compaction_threshold": 4,
+      "read_repair_chance": 1.0,
+      "key_validation_class": "org.apache.cassandra.db.marshal.BytesType",
+      "key_cache_save_period_in_seconds": 14400,
+      "replicate_on_write": true,
+      "row_cache_provider": "org.apache.cassandra.cache.ConcurrentLinkedHashCacheProvider"
+    }
+  ]
+}
