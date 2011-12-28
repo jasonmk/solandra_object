@@ -1,6 +1,7 @@
 module SolandraObject
   module SearchMethods
-    
+    attr_accessor :group_values, :order_values, :where_values, :where_not_values, :fulltext_values, :search_values
+    attr_accessor :offset_value, :page_value, :per_page_value, :reverse_order_value, :query_parser_value
     # Used to extend a scope with additional methods, either through 
     # a module or a block provided
     #
@@ -16,54 +17,83 @@ module SolandraObject
     end
     
     # Limit a single page to +value+ records
+    #
+    #   Model.limit(1)
+    #   Model.per_page(50)
+    #
+    # Note that ALL SolandraObject searches are paginated.  By default, page is
+    # set to one and per_page is set to 30.  This can be overridden on a per-model
+    # basis by overriding the default_page_size class method in your model:
+    #
+    #   class Model < SolandraObject::Base
+    #     def self.default_page_size
+    #       50
+    #     end
+    #   end
     def limit(value)
       clone.tap do |r|
-        r.sunspot_search.query.instance_variable_get(:@pagination).per_page = value
+        r.per_page_value = value
       end
     end
     alias :per_page :limit
     
-    # Sets an offset into the result set to start looking at
+    # Sets an offset into the result set to start looking from
+    #
+    #   Model.offset(1000)
     def offset(value)
       clone.tap do |r|
-        r.sunspot_search.query.instance_variable_get(:@pagination).offset = value
+        r.offset_value = value
       end
     end
     
     # Sets the page number to retrieve
+    #
+    #   Model.page(2)
     def page(value)
       clone.tap do |r|
-        r.sunspot_search.query.instance_variable_get(:@pagination).page = value
+        r.page_value = value
       end
     end
     
     # Group results by one or more attributes only returning the top result
     # for each group.
+    #
+    #   Model.group(:program_id)
     def group(*attrs)
-      return self if attrs.empty?
+      return self if attrs.blank?
       
       clone.tap do |r|
-        r.sunspot_search.build { group attrs }
+        r.group_values += args.flatten
       end
     end
     
     # Orders the result set by a particular attribute.  Note that text fields
     # may not be used for ordering as they are tokenized.  Valid candidates
     # are fields of type +string+, +integer+, +long+, +float+, +double+, and
-    # +time+.  In addition, the word +score+ can be used to sort on the 
+    # +time+.  In addition, the symbol +:score+ can be used to sort on the 
     # relevance rating returned by Solr.  The default direction is ascending
-    # but may be reversed by passing +:desc+ as the second parameter.
-    def order(attr, direction = :asc)
+    # but may be reversed by passing a hash where the field is the key and
+    # the value is :desc
+    #
+    #   Model.order(:name)
+    #   Model.order(:name => :desc)
+    def order(attr)
       return self if attr.blank?
-      
+
       clone.tap do |r|
-        r.sunspot_search.build { order_by attr, direction }
+        order_by = attr.dup
+        
+        unless(attr.is_a?(Hash))
+          order_by = {attr => :asc}
+        end
+        
+        r.order_values << order_by 
       end
     end
     
     # Direct access to Sunspot search method.
     #
-    #   relation.search do
+    #   Model.search do
     #     fulltext 'best pizza'
     # 
     #     with :blog_id, 1
@@ -77,68 +107,73 @@ module SolandraObject
     # any other criteria you have already specified.
     def search(&block)
       clone.tap do |r|
-        r.sunspot_search.build(&block)
+        r.search_values << &block
       end
     end
     
-    def reverse_order()
-      # TODO: Implement this
-    end
-    
-    # Specifies restrictions (scoping) on the result set.
+    # Reverses the order of the results
+    # 
+    #   Model.order(:name).reverse_order
+    #     is equivalent to
+    #   Model.order(:name => :desc)
     #
-    # +attr+ is the field name to match against.  For full-text searches,
-    #        you can also use +:all_fields+ to search across all text fields.
-    # +value+ can be a scalar, range, or array of scalars.
-    #
-    # +opts+ is a hash of the following options:
-    #   +:fulltext+: if set to true, performs a fulltext search instead of a
-    #                standard equality search.  For this to work, attr must
-    #                be set to a text field (or +:all_fields+).  The following
-    #                options will be ignored if this is set to true:
-    #                +:negate+, +:greater_than+, and +:less_than+
-    #   +:highlight+: if doing a fulltext search, this can be an array of fields
-    #                 to return highlighting information on.
-    #                 Note that for this to work the field must be +:stored+.
-    #   +:use_dismax+: If doing a fulltext search, this instructs SOLR to use
-    #                  the DisMax query parser to interpret the query.
-    #   +:negate+: if set to true, negates a condition
-    #   +:greater_than+: if set to true requires +attr+ to be greater than +value+.
-    #                    value must be a scalar in this case.
-    #   +:less_than+: if set to true requires +attr+ to be less than +value+.
-    #                 value must be a scalar in this case.
-    def where(attr, value, opts = {})
-      relation = clone
-      with = opts[:negate] ? :without : :with
-      if(opts[:fulltext])
-        relation.sunspot_search.build do 
-          fulltext value do
-            fields(attr) unless attr == :all_fields
-            highlight opts[:highlight] if opts[:highlight]
-          end
-          unless opts[:use_dismax]
-            adjust_solr_params do |params|
-              params.delete :defType
-            end
-          end
-        end
-      else
-        relation.sunspot_search.build do
-          if(opts[:greater_than])
-            send(with, attr).greater_than(value)
-          elsif(opts[:less_than])
-            send(with, attr).less_than(value)
-          else
-            send(with, attr, value)
-          end
-        end
+    #   Model.order(:name).reverse_order.reverse_order
+    #     is equivalent to
+    #   Model.order(:name => :asc)
+    def reverse_order
+      clone.tap do |r|
+        r.reverse_order_value == !r.reverse_order_value
       end
-      relation
     end
     
-    def fulltext(query, opts = {}, attr = :all_fields)
-      opts = opts.merge :fulltext => true
-      where(attr, query, opts)
+    # By default, SolandraObject uses the LuceneQueryParser.  Note that this
+    # is a change from the underlying Sunspot gem.  Sunspot defaults to the
+    # +disMax+ query parser.  If you want to use that, then pass that in here.
+    #
+    # *This only applies to fulltext queries*
+    #
+    #   Model.query_parser('disMax').fulltext("john smith")
+    def query_parser(attr)
+      return self if attr.blank?
+      
+      clone.tap do |r|
+        r.query_parser_value = attr
+      end
+    end
+    
+    # Specifies restrictions (scoping) on the result set. Expects a hash
+    # in the form +attribute => value+.
+    #
+    #   Model.where(:group_id => '1234', :active => 'Y')
+    def where(attr)
+      return self if attr.blank?
+      
+      clone.tap do |r|
+        r.where_values << attr
+      end
+    end
+    
+    # Specifies restrictions (scoping) that should not match the result set.
+    # Expects a hash in the form +attribute => value+.
+    #
+    #   Model.where_not(:group_id => '1234', :active => 'N')
+    def where_not(attr)
+      return self if attr.blank?
+      
+      clone.tap do |r|
+        r.where_not_values << attr
+      end
+    end
+    
+    # Specifies a full text search string to be processed by SOLR
+    #
+    #   Model.fulltext("john smith")
+    def fulltext(attr)
+      return self if attr.blank?
+      
+      clone.tap do |r|
+        r.fulltext_values << attr
+      end
     end
   end
 end

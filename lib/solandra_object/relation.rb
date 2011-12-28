@@ -4,15 +4,32 @@ module SolandraObject
     attr_reader :klass, :column_family, :loaded
     alias :loaded? :loaded
     
+    MULTI_VALUE_METHODS = [:group, :order, :where, :where_not, :fulltext, :search]
+    SINGLE_VALUE_METHODS = [:offset, :page, :per_page, :reverse_order, :query_parser]
+    
     def initialize(klass, column_family)
       @klass, @column_family = klass, column_family
       @loaded = false
       @results = []
+      @default_scoped = false
+      
+      SINGLE_VALUE_METHODS.each {|v| instance_variable_set(:"#{v}_value", nil)}
+      MULTI_VALUE_METHODS.each {|v| instance_variable_set(:"#{v}_values", [])}
+      @per_page = @klass.default_page_size
+      @page = 1
+      @offset = 0
+      @extensions = []
+      @create_with_value = {}
     end
     
     # Returns true if the two relations have the same query parameters
     def ==(other)
-      self.sunspot_search.query.to_params == other.sunspot_search.query.to_params
+      case other
+      when Relation
+        other.sunspot_search.to_params == sunspot_search.query.to_params
+      when Array
+        to_a == other
+      end
     end
     
     # Returns true if there are any results given the current criteria
@@ -91,12 +108,7 @@ module SolandraObject
     
     def initialize_copy(other) #:nodoc:
       reset
-    end
-    
-    def clone #:nodoc:
-      relation = dup
-      relation.instance_variable_set(:@search, @search.clone) if @search
-      relation
+      @search = nil
     end
     
     # Returns the size of the total result set for the given criteria
@@ -135,7 +147,53 @@ module SolandraObject
     
     # Returns the actual Sunspot search object
     def sunspot_search
-      @search ||= Sunspot.new_search(@klass)
+      return @search if @search
+      @search = Sunspot.new_search(@klass)
+      @search.build do
+        @where_values.each do |wv|
+          wv.each do |k,v|
+            with k, v
+          end
+        end
+        
+        @where_not_values.each do |wnv|
+          wnv.each do |k,v|
+            without k, v
+          end
+        end
+        
+        @order_values.each do |ov|
+          ov.each do |k,v|
+            if(@reverse_order_value)
+              order_by k, (v == :asc ? :desc : :asc)
+            else
+              order_by k, v
+            end
+          end
+        end
+        
+        @group_values.each do |gv|
+          group gv
+        end
+        
+        @fulltext_values.each do |ftv|
+          fulltext ftv
+        end
+        
+        @search_values.each do |sv|
+          sv.call
+        end
+        
+        paginate :page => @page_value, :per_page => @per_page_value, :offset => @offset_value
+        
+        adjust_solr_params do |params|
+          if @query_parser_value
+            params[:defType] = @query_parser_value
+          else
+            params.delete :defType
+          end
+        end
+      end
     end
     
     protected

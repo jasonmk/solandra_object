@@ -91,6 +91,10 @@ module SolandraObject
       #   end
       # end
       
+      def self.default_page_size
+        30
+      end
+      
       private
         def relation #:nodoc:
           @relation ||= Relation.new(self, column_family)
