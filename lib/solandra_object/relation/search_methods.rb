@@ -77,7 +77,7 @@ module SolandraObject
     # any other criteria you have already specified.
     def search(&block)
       clone.tap do |r|
-        r.sunspot_search.build.instance_eval(&block)
+        r.sunspot_search.build(&block)
       end
     end
     
@@ -100,6 +100,8 @@ module SolandraObject
     #   +:highlight+: if doing a fulltext search, this can be an array of fields
     #                 to return highlighting information on.
     #                 Note that for this to work the field must be +:stored+.
+    #   +:use_dismax+: If doing a fulltext search, this instructs SOLR to use
+    #                  the DisMax query parser to interpret the query.
     #   +:negate+: if set to true, negates a condition
     #   +:greater_than+: if set to true requires +attr+ to be greater than +value+.
     #                    value must be a scalar in this case.
@@ -113,6 +115,11 @@ module SolandraObject
           fulltext value do
             fields(attr) unless attr == :all_fields
             highlight opts[:highlight] if opts[:highlight]
+          end
+          unless opts[:use_dismax]
+            adjust_solr_params do |params|
+              params.delete :defType
+            end
           end
         end
       else

@@ -12,7 +12,7 @@ module SolandraObject
       self.reflections = {}
     end
 
-    # Reflection enables to interrogate Solandra Object classes and objects
+    # Reflection enables interrogation of Solandra Object classes and objects
     # about their associations and aggregations. This information can,
     # for example, be used in a form builder that takes an Solandra Object object
     # and creates input fields for all of the attributes depending on their type

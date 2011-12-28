@@ -52,6 +52,9 @@ describe SolandraObject::Relation do
       @relation.search do
         fulltext 'fishing OR swimming'
         order_by :name
+        adjust_solr_params do |params|
+          params.delete :defType
+        end
       end.count.should == 2
     end
   end

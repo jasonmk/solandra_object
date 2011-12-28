@@ -45,7 +45,7 @@ module SolandraObject
       delegate :first, :all, :exists?, :any?, :many?, :to => :scoped
       delegate :destroy, :destroy_all, :delete, :delete_all, :update, :update_all, :to => :scoped
       # delegate :find_each, :find_in_batches, :to => :scoped
-      delegate :order, :limit, :offset, :where, :page, :per_page, :each, :group, :total_pages, :to => :scoped
+      delegate :order, :limit, :offset, :where, :page, :per_page, :each, :group, :total_pages, :search, :fulltext, :to => :scoped
       delegate :count, :to => :scoped
 
       def logger
@@ -93,7 +93,7 @@ module SolandraObject
       
       private
         def relation #:nodoc:
-          @relation = Relation.new(self, column_family)
+          @relation ||= Relation.new(self, column_family)
         end
         
       protected
