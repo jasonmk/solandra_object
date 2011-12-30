@@ -1,6 +1,7 @@
 module SolandraObject
   class Relation
     include SearchMethods
+    include SpawnMethods
     attr_reader :klass, :column_family, :loaded
     alias :loaded? :loaded
     

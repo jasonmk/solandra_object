@@ -15,6 +15,7 @@ module SolandraObject
   
   autoload_under 'relation' do
     autoload :SearchMethods
+    autoload :SpawnMethods
   end
   
   autoload :NamedScope
