@@ -19,7 +19,7 @@ module SolandraObject
 
         scope_proc = lambda do |*args|
           options = scope_options.respond_to?(:call) ? scope_options.call(*args) : scope_options
-          # options = scoped.apply_finder_options(options) if options.is_a?(Hash)
+          options = scoped.apply_finder_options(options) if options.is_a?(Hash)
 
           relation = scoped.merge(options)
 
@@ -34,6 +34,10 @@ module SolandraObject
       end
       
       protected
+      
+        def apply_default_scope
+          
+        end
       
         # with_scope lets you apply options to inner block incrementally. It takes a hash and the keys must be
         # <tt>:find</tt> or <tt>:create</tt>. <tt>:find</tt> parameter is <tt>Relation</tt> while

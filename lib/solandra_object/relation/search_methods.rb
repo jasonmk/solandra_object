@@ -81,11 +81,7 @@ module SolandraObject
       return self if attr.blank?
 
       clone.tap do |r|
-        order_by = attr.dup
-        
-        unless(attr.is_a?(Hash))
-          order_by = {attr => :asc}
-        end
+        order_by = attr.is_a?(Hash) ? attr.dup : {attr => :asc}
         
         r.order_values << order_by 
       end
@@ -107,7 +103,7 @@ module SolandraObject
     # any other criteria you have already specified.
     def search(&block)
       clone.tap do |r|
-        r.search_values << &block
+        r.search_values << block
       end
     end
     
@@ -175,5 +171,18 @@ module SolandraObject
         r.fulltext_values << attr
       end
     end
+    
+    protected
+      def find_by_attributes(match, attributes, *args)
+        conditions = Hash[attributes.map {|a| [a, args[attributes.index(a)]]}]
+        result = where(conditions).send(match.finder)
+        
+        if match.blank? && result.blank?
+          raise RecordNotFound, "Couldn't find #{klass.name} with #{conditions.to_a.collect {|p| p.join('=')}.join(', ')}"
+        else
+          yield(result) if block_given?
+          result
+        end
+      end
   end
 end

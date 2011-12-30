@@ -7,7 +7,7 @@ describe SolandraObject::Relation do
   
   describe "#==" do
     it "should count two relations with the same parameters as equal" do
-      @relation.where("name","jason").should == @relation.where("name","jason")
+      @relation.where("name" => "jason").should == @relation.where("name" => "jason")
     end
   end
   
@@ -52,7 +52,7 @@ describe SolandraObject::Relation do
     it "should return a relation that has no scope set" do
       Hobby.create(:name => "fishing")
       Sunspot.commit
-      relation = @relation.where("name", "hiking")
+      relation = @relation.where("name" => "hiking")
       relation.count.should == 0
       relation.default_scope.count.should == 1
     end
