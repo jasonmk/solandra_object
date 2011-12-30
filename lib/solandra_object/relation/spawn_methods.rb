@@ -18,14 +18,14 @@ module SolandraObject
       merged_wheres = {}
       # This will merge all the where clauses into a single hash.  If the same attribute is
       # specified multiple times, the last one will win.
-      (@where_values + r.where_values).each { |w| merged_wheres.merge(w)}
+      (@where_values + r.where_values).each { |w| merged_wheres.merge!(w)}
       
       merged_relation.where_values = [merged_wheres] unless merged_wheres.empty?
       
       merged_where_nots = {}
       # This will merge all the where not clauses into a single hash.  If the same attribute is
       # specified multiple times, the last one will win.
-      (@where_not_values + r.where_not_values).each { |w| merged_where_nots.merge(w)}
+      (@where_not_values + r.where_not_values).each { |w| merged_where_nots.merge!(w)}
       
       merged_relation.where_not_values = [merged_where_nots] unless merged_where_nots.empty?
       
