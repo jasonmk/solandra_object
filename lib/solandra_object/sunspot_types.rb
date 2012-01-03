@@ -1,5 +1,5 @@
-module Sunspot
-  module Type    
+module Sunspot #:nodoc:
+  module Type #:nodoc:
     #
     # JSON is how Cassandra stores hashes.  For the purpose of
     # searching, we are just storing the JSON as text and letting
@@ -7,7 +7,7 @@ module Sunspot
     # want then you probably need to define a virtual attribute
     # yourself.
     #
-    class JsonType < Sunspot::Type::TextType
+    class JsonType < Sunspot::Type::TextType #:nodoc:
 
     end
     Sunspot::Type.register JsonType, JSON
