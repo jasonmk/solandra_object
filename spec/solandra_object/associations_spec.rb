@@ -11,14 +11,8 @@ describe SolandraObject::Base do
       end
       
       it "should look up the owning model by id" do
-        person = Person.new(:name => "John")
-        puts person.save
-        puts person.errors.inspect
-        puts person.name + " - " + person.id
-        puts "======"
-        job = Job.new(:title => "Developer", :person_id => person.id)
-        puts job.save
-        puts job.title + " - " + job.id
+        person = Person.create(:name => "John")
+        job = Job.create(:title => "Developer", :person_id => person.id)
         Sunspot.commit
         Job.first.person.should == person
       end

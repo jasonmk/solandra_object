@@ -40,7 +40,25 @@ describe SolandraObject::Relation do
   end
   
   describe "#order" do
+    it "should return items in ascending order" do
+      pending "Solandra doesn't seem to be sorting correctly" do
+        %w[fishing hiking boating jogging swimming chess].each do |word|
+          Hobby.create(:name => word)
+        end
+        Sunspot.commit
+        @relation.order(:name).collect {|h| h.name}.should == %w[boating chess fishing hiking jogging swimming]
+      end
+    end
     
+    it "should return items in descending order" do
+      pending "Solandra doesn't seem to be sorting correctly" do
+        %w[fishing hiking boating jogging swimming chess].each do |word|
+          Hobby.create(:name => word)
+        end
+        Sunspot.commit
+        @relation.order(:name => :desc).collect {|h| h.name}.should == %w[swimming jogging hiking fishing chess boating]
+      end
+    end
   end
   
   describe "#search" do

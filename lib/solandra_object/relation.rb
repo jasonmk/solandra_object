@@ -1,12 +1,13 @@
 module SolandraObject
   class Relation
-    include SearchMethods
-    include SpawnMethods
-    attr_reader :klass, :column_family, :loaded
-    alias :loaded? :loaded
-    
     MULTI_VALUE_METHODS = [:group, :order, :where, :where_not, :fulltext, :search, :greater_than, :less_than]
     SINGLE_VALUE_METHODS = [:offset, :page, :per_page, :reverse_order, :query_parser]
+    
+    include SearchMethods
+    include SpawnMethods
+    
+    attr_reader :klass, :column_family, :loaded
+    alias :loaded? :loaded
     
     def initialize(klass, column_family)
       @klass, @column_family = klass, column_family
