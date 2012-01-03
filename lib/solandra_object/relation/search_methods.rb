@@ -1,7 +1,12 @@
 module SolandraObject
   module SearchMethods
-    attr_accessor :group_values, :order_values, :where_values, :where_not_values, :fulltext_values, :search_values
-    attr_accessor :offset_value, :page_value, :per_page_value, :reverse_order_value, :query_parser_value
+    
+    Relation::MULTI_VALUE_METHODS.each do |m|
+      attr_accessor :"#{m}_values"
+    end
+    Relation::SINGLE_VALUE_METHODS.each do |m|
+      attr_accessor :"#{m}_value"
+    end
     # Used to extend a scope with additional methods, either through 
     # a module or a block provided
     #
@@ -77,11 +82,11 @@ module SolandraObject
     #
     #   Model.order(:name)
     #   Model.order(:name => :desc)
-    def order(attr)
-      return self if attr.blank?
+    def order(attribute)
+      return self if attribute.blank?
 
       clone.tap do |r|
-        order_by = attr.is_a?(Hash) ? attr.dup : {attr => :asc}
+        order_by = attribute.is_a?(Hash) ? attribute.dup : {attribute => :asc}
         
         r.order_values << order_by 
       end
@@ -129,23 +134,38 @@ module SolandraObject
     # *This only applies to fulltext queries*
     #
     #   Model.query_parser('disMax').fulltext("john smith")
-    def query_parser(attr)
-      return self if attr.blank?
+    def query_parser(attribute)
+      return self if attribute.blank?
       
       clone.tap do |r|
-        r.query_parser_value = attr
+        r.query_parser_value = attribute
       end
     end
     
     # Specifies restrictions (scoping) on the result set. Expects a hash
-    # in the form +attribute => value+.
+    # in the form +attribute => value+ for equality comparisons.
     #
     #   Model.where(:group_id => '1234', :active => 'Y')
-    def where(attr)
-      return self if attr.blank?
+    #
+    # The value of the comparison does not need to be a scalar.  For example:
+    #
+    #   Model.where(:name => ["Bob", "Tom", "Sally"])
+    #   Model.where(:age => 18..65)
+    #
+    # Inequality comparisons such as greater_than and less_than are
+    # specified via chaining:
+    #
+    #   Model.where(:created_at).greater_than(1.day.ago)
+    #   Model.where(:age).less_than(65)
+    def where(attribute)
+      return self if attribute.blank?
       
-      clone.tap do |r|
-        r.where_values << attr
+      if attribute.is_a?(:symbol)
+        WhereProxy.new(self, attribute)
+      else
+        clone.tap do |r|
+          r.where_values << attribute
+        end
       end
     end
     
@@ -153,23 +173,40 @@ module SolandraObject
     # Expects a hash in the form +attribute => value+.
     #
     #   Model.where_not(:group_id => '1234', :active => 'N')
-    def where_not(attr)
-      return self if attr.blank?
+    def where_not(attribute)
+      return self if attribute.blank?
       
       clone.tap do |r|
-        r.where_not_values << attr
+        r.where_not_values << attribute
       end
     end
     
     # Specifies a full text search string to be processed by SOLR
     #
     #   Model.fulltext("john smith")
-    def fulltext(attr)
-      return self if attr.blank?
+    #
+    # You can also pass in an options hash with the following options:
+    #
+    #  * :fields => list of fields to search instead of the default of all fields
+    #  * :highlight => List of fields to retrieve highlights for.  Note that highlighted fields *must* be +:stored+
+    #
+    #   Model.fulltext("john smith", :fields => [:title])
+    #   Model.fulltext("john smith", :hightlight => [:body])
+    def fulltext(query, opts = {})
+      return self if query.blank?
+      
+      opts[:query] = query
       
       clone.tap do |r|
-        r.fulltext_values << attr
+        r.fulltext_values << opts
       end
+    end
+    
+    def less_than(value)
+      raise ArgumentError, "#less_than can only be called after an appropriate where call. e.g. where(:created_at).less_than(1.day.ago)"
+    
+    def greater_than(value)
+      raise ArgumentError, "#greater_than can only be called after an appropriate where call. e.g. where(:created_at).greater_than(1.day.ago)"
     end
     
     protected
@@ -184,5 +221,23 @@ module SolandraObject
           result
         end
       end
+    
+    class WhereProxy
+      def initialize(relation, attribute)
+        @relation, @attribute = relation, attribute
+      end
+      
+      def greater_than(value)
+        @relation.clone.tap do |r|
+          r.greater_than_values << {@attribute => value}
+        end
+      end
+      
+      def less_than(value)
+        @relation.clone.tap do |r|
+          r.less_than_values << {@attribute => value}
+        end
+      end
+    end
   end
 end

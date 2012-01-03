@@ -1,7 +1,169 @@
 require 'jkusar-cassandra_object'
 require 'active_record/dynamic_finder_match'
 require 'active_record/dynamic_scope_match'
-module SolandraObject
+module SolandraObject :#nodoc:
+  # = Solandra Object
+  #
+  # Solandra Object-based objects differ from Active Record objects in that they specify their
+  # attributes directly on the model.  This is necessary because of the fact that Cassandra
+  # column families do not have a set list of columns but rather can have different columns per
+  # row.  By specifying the attributes on the model, getters and setters are automatically
+  # created, and the attribute is automatically indexed into SOLR.
+  #
+  # == Creation
+  #
+  # Solandra Objects accept constructor parameters either in a hash or as a block. The hash
+  # method is especially useful when you're receiving the data from somewhere else, like an
+  # HTTP request. It works like this:
+  #
+  #   user = User.new(:name => "David", :occupation => "Code Artist")
+  #   user.name # => "David"
+  #
+  # You can also use block initialization:
+  #
+  #   user = User.new do |u|
+  #     u.name = "David"
+  #     u.occupation = "Code Artist"
+  #   end
+  #
+  # And of course you can just create a bare object and specify the attributes after the fact:
+  #
+  #   user = User.new
+  #   user.name = "David"
+  #   user.occupation = "Code Artist"
+  #
+  # == Conditions
+  #
+  # Conditions are specified as a hash representing key/value pairs that will eventually be passed to Sunspot or as
+  # a chained call for greater_than and less_than conditions.  In addition, fulltext queries may be specified as a
+  # string that will eventually be parsed by SOLR as a standard SOLR query.
+  #
+  # A simple hash without a statement will generate conditions based on equality using boolean AND logic.
+  # For instance:
+  #
+  #   Student.where(:first_name => "Harvey", :status => 1)
+  #   Student.where(params[:student])
+  #
+  # A range may be used in the hash to use a SOLR range query:
+  #
+  #   Student.where(:grade => 9..12)
+  #
+  # An array may be used in the hash to construct a SOLR OR query:
+  #
+  #   Student.where(:grade => [9,11,12])
+  #
+  # Inequality can be tested for like so:
+  #
+  #   Student.where_not(:grade => 9)
+  #   Student.where(:grade).greater_than(9)
+  #   Student.where(:grade).less_than(10)
+  #
+  # Fulltext searching is natively supported.  All text and string fields are automatically indexed for fulltext
+  # searching.
+  #
+  #   Post.fulltext('Apple AND "iPhone 4s"')
+  #
+  # Fulltext searching uses the standard Lucene query parser.  If you want to use the newer disMax query parser,
+  # you can specify it like so:
+  #
+  #   Post.fulltext('Apple iPhone 4s').query_parser('disMax')
+  #
+  # For a full discussion of the differences between the two query parsers, see the SOLR documentation:
+  # https://wiki.apache.org/solr/SolrQuerySyntax
+  #
+  # == Overwriting default accessors
+  #
+  # All column values are automatically available through basic accessors on the Solandra Object,
+  # but sometimes you want to specialize this behavior. This can be done by overwriting
+  # the default accessors (using the same name as the attribute) and calling
+  # <tt>read_attribute(attr_name)</tt> and <tt>write_attribute(attr_name, value)</tt> to actually
+  # change things.
+  #
+  #   class Song < SolandraObject::Base
+  #     # Uses an integer of seconds to hold the length of the song
+  #
+  #     def length=(minutes)
+  #       write_attribute(:length, minutes.to_i * 60)
+  #     end
+  #
+  #     def length
+  #       read_attribute(:length) / 60
+  #     end
+  #   end
+  #
+  # You can alternatively use <tt>self[:attribute]=(value)</tt> and <tt>self[:attribute]</tt>
+  # instead of <tt>write_attribute(:attribute, value)</tt> and <tt>read_attribute(:attribute)</tt>.
+  #
+  # == Dynamic attribute-based finders
+  #
+  # Dynamic attribute-based finders are a cleaner way of getting (and/or creating) objects
+  # by simple queries without using where chains. They work by appending the name of an attribute
+  # to <tt>find_by_</tt> or <tt>find_all_by_</tt> and thus produces finders
+  # like <tt>Person.find_by_user_name</tt>, <tt>Person.find_all_by_last_name</tt>, and
+  # <tt>Payment.find_by_transaction_id</tt>. Instead of writing
+  # <tt>Person.where(:user_name => user_name).first</tt>, you just do <tt>Person.find_by_user_name(user_name)</tt>.
+  # And instead of writing <tt>Person.where(:last_name => last_name).all</tt>, you just do
+  # <tt>Person.find_all_by_last_name(last_name)</tt>.
+  #
+  # It's also possible to use multiple attributes in the same find by separating them with "_and_".
+  #
+  #   Person.where(:user_name => user_name, :password => password).first
+  #   Person.find_by_user_name_and_password(user_name, password) # with dynamic finder
+  #
+  # It's even possible to call these dynamic finder methods on relations and named scopes.
+  #
+  #   Payment.order("created_on").find_all_by_amount(50)
+  #   Payment.pending.find_last_by_amount(100)
+  #
+  # The same dynamic finder style can be used to create the object if it doesn't already exist.
+  # This dynamic finder is called with <tt>find_or_create_by_</tt> and will return the object if
+  # it already exists and otherwise creates it, then returns it. Protected attributes won't be set
+  # unless they are given in a block.
+  #
+  # NOTE: This functionality is currently unimplemented but will be in a release in the near future.
+  #
+  #   # No 'Summer' tag exists
+  #   Tag.find_or_create_by_name("Summer") # equal to Tag.create(:name => "Summer")
+  #
+  #   # Now the 'Summer' tag does exist
+  #   Tag.find_or_create_by_name("Summer") # equal to Tag.find_by_name("Summer")
+  #
+  #   # Now 'Bob' exist and is an 'admin'
+  #   User.find_or_create_by_name('Bob', :age => 40) { |u| u.admin = true }
+  #
+  # Use the <tt>find_or_initialize_by_</tt> finder if you want to return a new record without
+  # saving it first. Protected attributes won't be set unless they are given in a block.
+  #
+  #   # No 'Winter' tag exists
+  #   winter = Tag.find_or_initialize_by_name("Winter")
+  #   winter.persisted? # false
+  #
+  # Just like <tt>find_by_*</tt>, you can also use <tt>scoped_by_*</tt> to retrieve data. The good thing about
+  # using this feature is that the very first time result is returned using <tt>method_missing</tt> technique
+  # but after that the method is declared on the class. Henceforth <tt>method_missing</tt> will not be hit.
+  #
+  #   User.scoped_by_user_name('David')
+  #
+  # == Exceptions
+  #
+  # * SolandraObjectError - Generic error class and superclass of all other errors raised by Solandra Object.
+  # * AssociationTypeMismatch - The object assigned to the association wasn't of the type
+  #   specified in the association definition.
+  # * ConnectionNotEstablished+ - No connection has been established. Use <tt>establish_connection</tt>
+  #   before querying.
+  # * RecordNotFound - No record responded to the +find+ method. Either the row with the given ID doesn't exist
+  #   or the row didn't meet the additional restrictions. Some +find+ calls do not raise this exception to signal
+  #   nothing was found, please check its documentation for further details.
+  # * MultiparameterAssignmentErrors - Collection of errors that occurred during a mass assignment using the
+  #   <tt>attributes=</tt> method. The +errors+ property of this exception contains an array of
+  #   AttributeAssignmentError objects that should be inspected to determine which attributes triggered the errors.
+  # * AttributeAssignmentError - An error occurred while doing a mass assignment through the
+  #   <tt>attributes=</tt> method.
+  #   You can inspect the +attribute+ property of the exception object to determine which attribute
+  #   triggered the error.
+  #
+  # So it's possible to assign a logger to the class through <tt>Base.logger=</tt> which will then be used by all
+  # instances in the current object space.
   class Base < ::CassandraObject::Base
     include AttributeMethods
     include FinderMethods

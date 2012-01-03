@@ -5,7 +5,7 @@ module SolandraObject
     attr_reader :klass, :column_family, :loaded
     alias :loaded? :loaded
     
-    MULTI_VALUE_METHODS = [:group, :order, :where, :where_not, :fulltext, :search]
+    MULTI_VALUE_METHODS = [:group, :order, :where, :where_not, :fulltext, :search, :greater_than, :less_than]
     SINGLE_VALUE_METHODS = [:offset, :page, :per_page, :reverse_order, :query_parser]
     
     def initialize(klass, column_family)
@@ -181,6 +181,18 @@ module SolandraObject
         end
       end
       
+      @greater_than_values.each do |gtv|
+        gtv.each do |k,v|
+          @search.build { with(k).greater_than(v) }
+        end
+      end
+      
+      @less_than_values.each do |ltv|
+        ltv.each do |k,v|
+          @search.build { with(k).less_than(v) }
+        end
+      end
+      
       @order_values.each do |ov|
         ov.each do |k,v|
           if(@reverse_order_value)
@@ -196,7 +208,16 @@ module SolandraObject
       end
       
       @fulltext_values.each do |ftv|
-        @search.build { fulltext ftv }
+        @search.build do 
+          fulltext ftv[:query] do
+            if(ftv[:fields])
+              fields ftv[:fields]
+            end
+            if(ftv[:highlight])
+              highlight ftv[:fields]
+            end
+          end
+        end
       end
       
       # We have to put these in local variables because the block doesn't
