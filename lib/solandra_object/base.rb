@@ -1,7 +1,7 @@
 require 'jkusar-cassandra_object'
 require 'active_record/dynamic_finder_match'
 require 'active_record/dynamic_scope_match'
-module SolandraObject :#nodoc:
+module SolandraObject #:nodoc:
   # = Solandra Object
   #
   # Solandra Object-based objects differ from Active Record objects in that they specify their
@@ -162,8 +162,7 @@ module SolandraObject :#nodoc:
   #   You can inspect the +attribute+ property of the exception object to determine which attribute
   #   triggered the error.
   #
-  # So it's possible to assign a logger to the class through <tt>Base.logger=</tt> which will then be used by all
-  # instances in the current object space.
+  # See the documentation for SearchMethods for more examples of using the search API.
   class Base < ::CassandraObject::Base
     include AttributeMethods
     include FinderMethods

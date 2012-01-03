@@ -160,7 +160,7 @@ module SolandraObject
     def where(attribute)
       return self if attribute.blank?
       
-      if attribute.is_a?(:symbol)
+      if attribute.is_a?(Symbol)
         WhereProxy.new(self, attribute)
       else
         clone.tap do |r|
@@ -202,9 +202,12 @@ module SolandraObject
       end
     end
     
+    # See documentation for +where+
     def less_than(value)
       raise ArgumentError, "#less_than can only be called after an appropriate where call. e.g. where(:created_at).less_than(1.day.ago)"
+    end
     
+    # See documentation for +where+
     def greater_than(value)
       raise ArgumentError, "#greater_than can only be called after an appropriate where call. e.g. where(:created_at).greater_than(1.day.ago)"
     end
@@ -222,18 +225,18 @@ module SolandraObject
         end
       end
     
-    class WhereProxy
-      def initialize(relation, attribute)
+    class WhereProxy #:nodoc:
+      def initialize(relation, attribute) #:nodoc:
         @relation, @attribute = relation, attribute
       end
       
-      def greater_than(value)
+      def greater_than(value) #:nodoc:
         @relation.clone.tap do |r|
           r.greater_than_values << {@attribute => value}
         end
       end
       
-      def less_than(value)
+      def less_than(value) #:nodoc:
         @relation.clone.tap do |r|
           r.less_than_values << {@attribute => value}
         end
