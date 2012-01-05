@@ -7,6 +7,7 @@ module SolandraObject
     Relation::SINGLE_VALUE_METHODS.each do |m|
       attr_accessor :"#{m}_value"
     end
+    
     # Used to extend a scope with additional methods, either through 
     # a module or a block provided
     #
@@ -16,9 +17,9 @@ module SolandraObject
 
       return self if modules.empty?
 
-      relation = clone
-      relation.send(:apply_modules, modules.flatten)
-      relation
+      clone.tap do |r|
+        r.send(:apply_modules, modules.flatten)
+      end
     end
     
     # Limit a single page to +value+ records
@@ -26,13 +27,14 @@ module SolandraObject
     #   Model.limit(1)
     #   Model.per_page(50)
     #
-    # Note that ALL SolandraObject searches are paginated.  By default, page is
-    # set to one and per_page is set to 30.  This can be overridden on a per-model
-    # basis by overriding the default_page_size class method in your model:
+    # Normally SolandraObject searches are paginated at a really high number
+    # so as to effectively disable pagination.  However, you can cause
+    # all requests to be paginated on a per-model basis by overriding the
+    # +default_page_size+ class method in your model:
     #
     #   class Model < SolandraObject::Base
     #     def self.default_page_size
-    #       50
+    #       30
     #     end
     #   end
     def limit(value)
@@ -213,7 +215,7 @@ module SolandraObject
     end
     
     protected
-      def find_by_attributes(match, attributes, *args)
+      def find_by_attributes(match, attributes, *args) #:nodoc:
         conditions = Hash[attributes.map {|a| [a, args[attributes.index(a)]]}]
         result = where(conditions).send(match.finder)
         

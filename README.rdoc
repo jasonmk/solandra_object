@@ -1,7 +1,10 @@
 = SolandraObject
 
 SolandraObject merges the functionality of Gotime's CassandraObject and Sunspot::Rails.
-It does this by automatically indexing attributes declared as part of the model
+It does this by automatically indexing attributes declared as part of the model.  The
+general idea is to use this with Solandra so that your index is distributed along with
+your data, but if you're not running distributed then there's no reason it can't be used
+with a normal SOLR installation.
 
 === Installation
 
@@ -9,12 +12,12 @@ Add the following to your Gemfile:
 
   gem 'thrift', '~> 0.7.0'
   gem 'cassandra', '~> 0.12.1'
-  gem 'solandra_object', '~> 0.0.1'
+  gem 'solandra_object', '~> 0.1.0'
 
 Change version numbers as appropriate.
 
 Of course you need a solr/solandra instance running to use this.
-They also need to be properly configured. Create a default config file
+It also needs to be properly configured. Create a default config file
 for sunspot_rails like this:
 
   rails generate sunspot_rails:install
@@ -41,5 +44,5 @@ Configure solandra with the SolandraObject schema:
     json :extra_attributes
   end
 
-For more examples and instructions on how to use this, consult the documentation 
-for sunspot, sunspot_rails, cassandra_object and solandra.
+For more examples and instructions on how to use this, see the API docs and consult
+the documentation sunspot, sunspot_rails, cassandra_object and solandra.

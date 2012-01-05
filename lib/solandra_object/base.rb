@@ -229,8 +229,19 @@ module SolandraObject #:nodoc:
         @attribute_names ||= attribute_definitions.keys.collect {|a|a.to_s}
       end
       
+      # SOLR always paginates all requests.  There is no way to disable it, so we are
+      # setting the default page size to an arbitrarily high number so that we effectively
+      # remove pagination.  If you instead want a model set to something more sane, then
+      # override this method in your model and set it.  Of course, the page size can
+      # always be raised or lowered for an individual request.
+      #
+      #   class Model < SolandraObject::Base
+      #     def self.default_page_size
+      #       30
+      #     end
+      #   end
       def default_page_size
-        30
+        100000
       end
       
       private

@@ -9,7 +9,7 @@ module SolandraObject
     attr_reader :klass, :column_family, :loaded
     alias :loaded? :loaded
     
-    def initialize(klass, column_family)
+    def initialize(klass, column_family) #:nodoc:
       @klass, @column_family = klass, column_family
       @loaded = false
       @results = []
@@ -47,7 +47,7 @@ module SolandraObject
     
     # Returns the total number of entries that match the given search.
     # This means the total number of matches regardless of page size.
-    # Compare with +size+.
+    # Compare with #size.
     def count
       if loaded?
         @results.total_entries
@@ -116,7 +116,7 @@ module SolandraObject
       @search = nil
     end
     
-    def clone
+    def clone #:nodoc:
       dup.tap do |r|
         MULTI_VALUE_METHODS.each do |m|
           if m == :search
@@ -134,18 +134,21 @@ module SolandraObject
     
     # Returns the size of the total result set for the given criteria
     # NOTE that this takes pagination into account so will only return
-    # the number of results in the current page.  SolandraObject queries
-    # default to a page size of 30
+    # the number of results in the current page.  SolandraObject models
+    # can have a +default_page_size+ set which will cause them to be
+    # paginated all the time.
+    # Compare with #count
     def size
       return @results.size if loaded?
       total_entries = count
-      total_entries > page_size ? page_size : total_entries
+      (per_page_value && total_entries > per_page_value) ? per_page_value : total_entries
     end
     
     # Returns the total number of pages required to display the results
     # given the current page size.  Used by will_paginate.
     def total_pages
-      (count / page_size.to_f).ceil
+      return 1 unless @per_page_value
+      (count / @per_page_value.to_f).ceil
     end
     
     # Actually executes the query if not already executed.
@@ -166,7 +169,8 @@ module SolandraObject
         super
     end
     
-    # Returns the actual Sunspot search object
+    # Creates and returns an actual sunspot search object based on the
+    # information that is stored in this +Relation+.
     def sunspot_search
       return @search if @search
       @search = Sunspot.new_search(@klass)
@@ -249,10 +253,6 @@ module SolandraObject
     end
     
     protected
-    
-      def page_size
-        sunspot_search.query.instance_variable_get(:@pagination).per_page
-      end
       
       def method_missing(method, *args, &block)
         if Array.method_defined?(method)

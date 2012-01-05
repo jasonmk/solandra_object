@@ -1,4 +1,4 @@
-module SolandraObject::Associations::Builder
+module SolandraObject::Associations::Builder #:nodoc:
   class CollectionAssociation < Association #:nodoc:
     CALLBACKS = [:before_add, :after_add, :before_remove, :after_remove]
     

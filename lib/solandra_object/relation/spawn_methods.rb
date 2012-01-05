@@ -1,10 +1,10 @@
 module SolandraObject
   module SpawnMethods
-    def scoped
+    def scoped #:nodoc:
       self
     end
     
-    def merge(r)
+    def merge(r) #:nodoc:
       return self unless r
       return to_a & r if r.is_a?(Array)
       
@@ -38,7 +38,7 @@ module SolandraObject
     end
     
     VALID_FIND_OPTIONS = [:conditions, :limit, :offset, :order, :group, :page, :per_page]
-    def apply_finder_options(options)
+    def apply_finder_options(options) #:nodoc:
       relation = clone
       return relation unless options
       
