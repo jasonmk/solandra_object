@@ -17,9 +17,9 @@ module SolandraObject
       
       SINGLE_VALUE_METHODS.each {|v| instance_variable_set(:"@#{v}_value", nil)}
       MULTI_VALUE_METHODS.each {|v| instance_variable_set(:"@#{v}_values", [])}
-      @per_page = @klass.default_page_size
-      @page = 1
-      @offset = 0
+      @per_page_value = @klass.default_page_size
+      @page_value = 1
+      @offset_value = 0
       @extensions = []
       @create_with_value = {}
       apply_default_scope

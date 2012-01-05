@@ -58,7 +58,7 @@ module SolandraObject
       end
       
       def scoped
-        target_scope.where(reflection.foreign_key, owner.id)
+        target_scope.where(reflection.foreign_key => owner.id)
       end
       
       def reset_scope
