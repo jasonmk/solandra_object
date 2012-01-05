@@ -3,7 +3,25 @@ module SolandraObject
     extend ActiveSupport::Concern
     
     module ClassMethods
-      def multi_find(keys)
+      def find(keys)
+        key_string = key.try :to_s
+
+        if key_string.blank?
+          raise SolandraObject::RecordNotFound, "Couldn't find #{self.name} with key #{key.inspect}"
+        elsif attributes = connection.get(column_family, key_string, {:count => 500}).presence
+          instantiate(key_string, attributes)
+        else
+          raise SolandraObject::RecordNotFound
+        end
+      end
+      
+      def find_by_id(key)
+        find(key)
+      rescue CassandraObject::RecordNotFound
+        nil
+      end
+      
+      def multi_find(*keys)
         keys = Array(keys)
         key_strings = keys.collect {|k| k.try :to_s}.compact
 

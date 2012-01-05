@@ -1,16 +1,37 @@
 require 'jkusar-cassandra_object'
+require 'solandra_object/log_subscriber'
 require 'active_record/dynamic_finder_match'
 require 'active_record/dynamic_scope_match'
+require 'solandra_object/errors'
+require 'solandra_object/types'
+
 module SolandraObject
-  class Base < ::CassandraObject::Base
+  class Base
     include AttributeMethods
+    include AttributeMethods::Dirty
+    include AttributeMethods::Typecasting
+    include Callbacks
+    include Connection
+    include Consistency
+    include Identity
     include FinderMethods
     include Validations
     include Reflection
     include Associations
     include NamedScope
+    include Migrations
+    include Persistence
+    include Timestamps
+    
     include ActiveModel::MassAssignmentSecurity
     include ActiveModel::Validations::Callbacks
+    include ActiveModel::Serializers::JSON
+    extend ActiveModel::Naming
+    include ActiveModel::Conversion
+    extend ActiveSupport::DescendantsTracker
+    
+    attr_reader :attributes
+    attr_accessor :key
     
     def initialize(attributes = {})
       @key = attributes.delete(:key)
@@ -30,6 +51,25 @@ module SolandraObject
           raise(UnknownAttributeError, "unknown attribute: #{k}")
         end
       end
+    end
+    
+    def to_param
+      id.to_s if persisted?
+    end
+    
+    def hash
+      id.hash
+    end
+    
+    def ==(other)
+      other.equal(self) ||
+      (other.instance_of?(self.class) &&
+        other.key == key &&
+        !other.new_record?)
+    end
+    
+    def eql?(other)
+      self == (other)
     end
     
     # Freeze the attributes hash such that associations are still accessible, even on destroyed records.
@@ -61,6 +101,22 @@ module SolandraObject
         end
 
         super
+      end
+      
+      def column_family=(column_family)
+        @column_family = column_family
+      end
+
+      def column_family
+        @column_family || name.pluralize
+      end
+
+      def base_class
+        klass = self
+        while klass.superclass != Base
+          klass = klass.superclass
+        end
+        klass
       end
       
       # Returns an array of attribute names as strings

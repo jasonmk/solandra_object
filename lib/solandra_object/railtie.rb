@@ -13,6 +13,11 @@ module SolandraObject
     
     rake_tasks do
       load 'tasks/solandra_object_tasks.rake'
+      load 'solandra_object/tasks/ks.rake'
+    end
+    
+    generators do
+      require 'solandra_object/generators/migration_generator'
     end
   end
 end
