@@ -207,7 +207,7 @@ module SolandraObject #:nodoc:
       delegate :first, :all, :exists?, :any?, :many?, :to => :scoped
       delegate :destroy, :destroy_all, :delete, :delete_all, :update, :update_all, :to => :scoped
       # delegate :find_each, :find_in_batches, :to => :scoped
-      delegate :order, :limit, :offset, :where, :page, :per_page, :each, :group, :total_pages, :search, :fulltext, :to => :scoped
+      delegate :order, :limit, :offset, :where, :page, :paginate, :per_page, :each, :group, :total_pages, :search, :fulltext, :to => :scoped
       delegate :count, :to => :scoped
 
       def logger
@@ -244,6 +244,11 @@ module SolandraObject #:nodoc:
         100000
       end
       
+      def search_ids(&block)
+        search = solr_search(&block)
+        search.raw_results.map { |result| result.primary_key }
+      end
+
       private
       
         # Enables dynamic finders like <tt>User.find_by_user_name(user_name)</tt> and

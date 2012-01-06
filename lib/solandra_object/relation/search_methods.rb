@@ -62,6 +62,17 @@ module SolandraObject
       end
     end
     
+    # WillPaginate compatible method for paginating
+    #
+    #   Model.paginate(:page => 2, :per_page => 10)
+    def paginate(options = {})
+      options = options.reverse_merge({:page => 1, :per_page => 30})
+      clone.tap do |r|
+        r.page_value = options[:page]
+        r.per_page_value = options[:per_page]
+      end
+    end
+    
     # Group results by one or more attributes only returning the top result
     # for each group.
     #
