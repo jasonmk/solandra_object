@@ -10,8 +10,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Jason M. Kusar"]
   s.email       = ["jason@kusar.net"]
   s.homepage    = "https://github.com/jkusar/solandra_object"
-  s.summary     = "Cassandra Object with Sunspot Rails and Solandra integrated to provide search capabilities"
-  s.description = "Cassandra Object with Sunspot Rails and Solandra integrated to provide search capabilities"
+  s.summary     = "Cassandra Object with Sunspot Rails integrated to provide search capabilities"
+  s.description = "Cassandra Object with Sunspot Rails integrated to provide search capabilities.  Intended for use with Solandra but should work with any SOLR."
 
   s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["spec/**/*"]
