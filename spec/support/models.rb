@@ -8,8 +8,20 @@ class Person < SolandraObject::Base
   key :uuid
   string :name
   date :birthdate
+  string :nickname
+  
+  before_save :set_nickname
+  after_save :set_variable
   
   validates :name, :presence => true, :uniqueness => :true
+  
+  def set_nickname
+    self.nickname ||= self.name
+  end
+  
+  def set_variable
+    @after_save_ran = "yup"
+  end
 end
 
 class Car < SolandraObject::Base

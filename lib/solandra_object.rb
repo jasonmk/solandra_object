@@ -5,7 +5,7 @@ module SolandraObject
   
   autoload :Base
   autoload :AttributeMethods
-  autoload :FinderMethods
+  autoload :CassandraFinderMethods
   autoload :SunspotAdapters
   autoload :Validations
   autoload :Associations
@@ -13,6 +13,8 @@ module SolandraObject
   autoload :Relation
   
   autoload_under 'relation' do
+    autoload :FinderMethods
+    autoload :ModificationMethods
     autoload :SearchMethods
     autoload :SpawnMethods
   end

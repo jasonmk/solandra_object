@@ -1,5 +1,5 @@
 module SolandraObject
-  module FinderMethods
+  module CassandraFinderMethods
     extend ActiveSupport::Concern
     
     module ClassMethods

@@ -1,13 +1,5 @@
 module SolandraObject
   module SearchMethods
-    
-    Relation::MULTI_VALUE_METHODS.each do |m|
-      attr_accessor :"#{m}_values"
-    end
-    Relation::SINGLE_VALUE_METHODS.each do |m|
-      attr_accessor :"#{m}_value"
-    end
-    
     # Used to extend a scope with additional methods, either through 
     # a module or a block provided
     #

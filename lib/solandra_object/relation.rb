@@ -3,7 +3,16 @@ module SolandraObject
     MULTI_VALUE_METHODS = [:group, :order, :where, :where_not, :fulltext, :search, :greater_than, :less_than]
     SINGLE_VALUE_METHODS = [:offset, :page, :per_page, :reverse_order, :query_parser]
     
+    Relation::MULTI_VALUE_METHODS.each do |m|
+      attr_accessor :"#{m}_values"
+    end
+    Relation::SINGLE_VALUE_METHODS.each do |m|
+      attr_accessor :"#{m}_value"
+    end
+    
     include SearchMethods
+    include ModificationMethods
+    include FinderMethods
     include SpawnMethods
     
     attr_reader :klass, :column_family, :loaded
@@ -65,16 +74,6 @@ module SolandraObject
       end
     end
     
-    # Returns the first record from the result set if it's already loaded.
-    # Otherwise, runs the search with a limit of 1 and returns that.
-    def first
-      @first ||= if loaded?
-        @results.first
-      else
-        limit(1).to_a.first
-      end
-    end
-    
     # Returns true if there are no results given the current criteria
     def empty?
       return @results.empty? if loaded?
@@ -107,7 +106,7 @@ module SolandraObject
     # Empties out the current results.  The next call to to_a
     # will re-run the query.
     def reset
-      @loaded = @first = nil
+      @loaded = @first = @last = nil
       @results = []
     end
     
@@ -250,6 +249,10 @@ module SolandraObject
         @search.build(&sv)
       end
       @search
+    end
+    
+    def inspect(just_me = false)
+      just_me ? super() : to_a.inspect
     end
     
     protected

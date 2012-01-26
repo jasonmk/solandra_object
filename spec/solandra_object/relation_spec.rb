@@ -58,31 +58,6 @@ describe SolandraObject::Relation do
     end
   end
   
-  describe "#first" do
-    it "should return the first result if records are already loaded" do
-      a_record = mock_model(Hobby)
-      @relation.stub(:loaded? => true)
-      @relation.instance_variable_set(:@results, [a_record])
-      @relation.first.should == a_record
-    end
-    
-    it "should look up the first result if records are not already loaded" do
-      a_record = mock_model(Hobby)
-      @relation.stub(:loaded? => false)
-      mock_relation = mock(SolandraObject::Relation, :to_a => [a_record])
-      @relation.should_receive(:limit).with(1).and_return(mock_relation)
-      @relation.first.should == a_record
-    end
-    
-    it "should store the first record in @first" do
-      a_record = mock_model(Hobby)
-      @relation.stub(:loaded? => true)
-      @relation.instance_variable_set(:@results, [a_record])
-      @relation.first
-      @relation.instance_variable_get(:@first).should == a_record
-    end
-  end
-  
   describe "#empty?" do
     it "should use the loaded result set to determine emptiness" do
       a_record = mock_model(Hobby)

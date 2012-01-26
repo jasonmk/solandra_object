@@ -165,7 +165,7 @@ module SolandraObject #:nodoc:
   # See the documentation for SearchMethods for more examples of using the search API.
   class Base < ::CassandraObject::Base
     include AttributeMethods
-    include FinderMethods
+    include CassandraFinderMethods
     include Validations
     include Reflection
     include Associations

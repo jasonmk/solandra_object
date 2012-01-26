@@ -10,4 +10,7 @@ module SolandraObject
   
   class DeleteRestrictionError < SolandraObjectError
   end
+  
+  class RecordNotFound < SolandraObjectError
+  end
 end

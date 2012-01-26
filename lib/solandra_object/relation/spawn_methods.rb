@@ -37,6 +37,55 @@ module SolandraObject
       merged_relation
     end
     
+    # Removes from the query the condition(s) specified in +skips+.
+    #
+    # Example:
+    #
+    #   Post.where(:active => true).order('id').except(:order) # discards the order condition
+    #   Post.where(:active => true).order('id').except(:where) # discards the where condition but keeps the order
+    def except(*skips)
+      result = self.class.new(@klass, table)
+      result.default_scoped = default_scoped
+
+      ((Relation::ASSOCIATION_METHODS + Relation::MULTI_VALUE_METHODS) - skips).each do |method|
+        result.send(:"#{method}_values=", send(:"#{method}_values"))
+      end
+
+      (Relation::SINGLE_VALUE_METHODS - skips).each do |method|
+        result.send(:"#{method}_value=", send(:"#{method}_value"))
+      end
+
+      # Apply scope extension modules
+      result.send(:apply_modules, extensions)
+
+      result
+    end
+    
+    # Removes any condition from the query other than the one(s) specified in +onlies+.
+    #
+    # Example:
+    #
+    #   Post.order('id').only(:where)         # discards the order condition
+    #   Post.order('id').only(:where, :order) # uses the specified order
+    #
+    def only(*onlies)
+      result = self.class.new(@klass, table)
+      result.default_scoped = default_scoped
+
+      ((Relation::ASSOCIATION_METHODS + Relation::MULTI_VALUE_METHODS) & onlies).each do |method|
+        result.send(:"#{method}_values=", send(:"#{method}_values"))
+      end
+
+      (Relation::SINGLE_VALUE_METHODS & onlies).each do |method|
+        result.send(:"#{method}_value=", send(:"#{method}_value"))
+      end
+
+      # Apply scope extension modules
+      result.send(:apply_modules, extensions)
+
+      result
+    end
+    
     VALID_FIND_OPTIONS = [:conditions, :limit, :offset, :order, :group, :page, :per_page]
     def apply_finder_options(options) #:nodoc:
       relation = clone

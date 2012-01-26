@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe SolandraObject::Base do
-  describe "Finder methods" do
+  describe "Cassandra finder methods" do
     before(:each) do
       @p1=Person.create(:name => "Jason")
       @p2=Person.create(:name => "John")
