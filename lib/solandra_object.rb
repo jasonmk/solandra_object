@@ -20,6 +20,7 @@ module SolandraObject
   end
   
   autoload :NamedScope
+  autoload :Persistence
 end
 
 require 'solandra_object/railtie' if defined?(Rails)

@@ -54,7 +54,7 @@ module SolandraObject
         loaded!
         target
       end
-            
+      
       private
       
         # We have some records loaded from the database (persisted) and some that are

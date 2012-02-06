@@ -36,7 +36,7 @@ module SolandraObject::Associations::Builder
             end
           end
 
-          send(name).delete_all
+          send(name).destroy_all
         end
       end
       

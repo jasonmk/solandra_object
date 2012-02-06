@@ -54,6 +54,16 @@
     -->
     <!-- *** This fieldType is used by Sunspot! *** -->
     <fieldType name="string" class="solr.StrField" omitNorms="true"/>
+    <fieldType name="string_ci" class="solr.TextField" omitNorms="true">
+    	<analyzer type="index">
+    		<tokenizer class="solr.KeywordTokenizerFactory"/>
+    		<filter class="solr.LowerCaseFilterFactory"/>
+    	</analyzer>
+    	<analyzer type="query">
+    		<tokenizer class="solr.KeywordTokenizerFactory"/>
+    		<filter class="solr.LowerCaseFilterFactory"/>
+    	</analyzer>
+    </fieldType>
     <!-- *** This fieldType is used by Sunspot! *** -->
     <fieldType name="tdouble" class="solr.TrieDoubleField" omitNorms="true"/>
     <!-- *** This fieldType is used by Sunspot! *** -->
@@ -118,7 +128,7 @@
     <!-- *** This field is used by Sunspot! *** -->
     <field name="class_name" stored="false" type="string" multiValued="false" indexed="true"/>
     <!-- *** This field is used by Sunspot! *** -->
-    <field name="text" stored="false" type="string" multiValued="true" indexed="true"/>
+    <field name="text" stored="false" type="text" multiValued="true" indexed="true"/>
     <!-- *** This field is used by Sunspot! *** -->
     <field name="lat" stored="true" type="tdouble" multiValued="false" indexed="true"/>
     <!-- *** This field is used by Sunspot! *** -->
@@ -180,13 +190,21 @@
     <!-- *** This dynamicField is used by Sunspot! *** -->
     <dynamicField name="*_lms" stored="true" type="slong" multiValued="true" indexed="true"/>
     <!-- *** This dynamicField is used by Sunspot! *** -->
-    <dynamicField name="*_s" stored="false" type="string" multiValued="false" indexed="true"/>
+    <dynamicField name="*_sc" stored="false" type="string" multiValued="false" indexed="true"/>
     <!-- *** This dynamicField is used by Sunspot! *** -->
-    <dynamicField name="*_sm" stored="false" type="string" multiValued="true" indexed="true"/>
+    <dynamicField name="*_scm" stored="false" type="string" multiValued="true" indexed="true"/>
     <!-- *** This dynamicField is used by Sunspot! *** -->
-    <dynamicField name="*_ss" stored="true" type="string" multiValued="false" indexed="true"/>
+    <dynamicField name="*_scs" stored="true" type="string" multiValued="false" indexed="true"/>
     <!-- *** This dynamicField is used by Sunspot! *** -->
-    <dynamicField name="*_sms" stored="true" type="string" multiValued="true" indexed="true"/>
+    <dynamicField name="*_scms" stored="true" type="string" multiValued="true" indexed="true"/>
+    <!-- *** This dynamicField is used by Sunspot! *** -->
+    <dynamicField name="*_s" stored="false" type="string_ci" multiValued="false" indexed="true"/>
+    <!-- *** This dynamicField is used by Sunspot! *** -->
+    <dynamicField name="*_sm" stored="false" type="string_ci" multiValued="true" indexed="true"/>
+    <!-- *** This dynamicField is used by Sunspot! *** -->
+    <dynamicField name="*_ss" stored="true" type="string_ci" multiValued="false" indexed="true"/>
+    <!-- *** This dynamicField is used by Sunspot! *** -->
+    <dynamicField name="*_sms" stored="true" type="string_ci" multiValued="true" indexed="true"/>
     <!-- *** This dynamicField is used by Sunspot! *** -->
     <dynamicField name="*_it" stored="false" type="tint" multiValued="false" indexed="true"/>
     <!-- *** This dynamicField is used by Sunspot! *** -->
@@ -239,4 +257,10 @@
   <copyField source="*_sm" dest="text"/>
   <copyField source="*_ss" dest="text"/>
   <copyField source="*_sms" dest="text"/>
+  <copyField source="*_sc" dest="text"/>
+  <copyField source="*_scm" dest="text"/>
+  <copyField source="*_scs" dest="text"/>
+  <copyField source="*_scms" dest="text"/>
+  <copyField source="*_text" dest="text"/>
+  <copyField source="*_texts" dest="text"/>
 </schema>

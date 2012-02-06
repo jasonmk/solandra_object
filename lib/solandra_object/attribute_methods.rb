@@ -29,6 +29,8 @@ module SolandraObject
         unless Sunspot::Setup.for(self).fields.detect {|f|f.name == :unique_id}
           searchable do
             string "unique_id", :using => :id
+            time "created_at"
+            time "updated_at"
           end
         end
       end

@@ -170,6 +170,7 @@ module SolandraObject #:nodoc:
     include Reflection
     include Associations
     include NamedScope
+    include Persistence
     include ActiveModel::MassAssignmentSecurity
     include ActiveModel::Validations::Callbacks
     

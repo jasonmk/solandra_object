@@ -2,7 +2,7 @@ class Person < SolandraObject::Base
   self.column_family = "people"
   
   has_one :job
-  has_many :cars
+  has_many :cars, :dependent => :destroy
   has_and_belongs_to_many :hobbies
   
   key :uuid
