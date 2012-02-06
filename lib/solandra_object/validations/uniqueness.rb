@@ -4,7 +4,7 @@ module SolandraObject
   module Validations
     class UniquenessValidator < ActiveModel::EachValidator
       def initialize(options)
-        
+        super
       end
       
       def validate_each(record, attribute, value)
@@ -23,9 +23,9 @@ module SolandraObject
         end
       end
       
-      def check_validity!
-        
-      end
+      # def check_validity!
+#         
+      # end
     end
     
     module ClassMethods

@@ -9,6 +9,7 @@ module SolandraObject
     Relation::SINGLE_VALUE_METHODS.each do |m|
       attr_accessor :"#{m}_value"
     end
+    attr_accessor :create_with_value, :default_scoped
     
     include SearchMethods
     include ModificationMethods
@@ -17,6 +18,7 @@ module SolandraObject
     
     attr_reader :klass, :column_family, :loaded
     alias :loaded? :loaded
+    alias :default_scoped? :default_scoped
     
     def initialize(klass, column_family) #:nodoc:
       @klass, @column_family = klass, column_family
@@ -93,7 +95,7 @@ module SolandraObject
     
     # Constructs a new instance of the class this relation points to
     def new(*args, &block)
-      @klass.new(*args, &block)
+      scoping { @klass.new(*args, &block) }
     end
     
     # Reloads the results from Solr
@@ -106,7 +108,7 @@ module SolandraObject
     # Empties out the current results.  The next call to to_a
     # will re-run the query.
     def reset
-      @loaded = @first = @last = nil
+      @loaded = @first = @last = @scope_for_create = nil
       @results = []
     end
     
@@ -160,6 +162,14 @@ module SolandraObject
     end
     alias :all :to_a
     alias :results :to_a
+    
+    def create(*args, &block)
+      scoping { @klass.create(*args, &block) }
+    end
+
+    def create!(*args, &block)
+      scoping { @klass.create!(*args, &block) }
+    end
     
     def respond_to?(method, include_private = false) #:nodoc:
       sunspot_search.respond_to?(method, include_private)   ||
@@ -253,6 +263,28 @@ module SolandraObject
     
     def inspect(just_me = false)
       just_me ? super() : to_a.inspect
+    end
+    
+    # Scope all queries to the current scope.
+    #
+    # ==== Example
+    #
+    #   Comment.where(:post_id => 1).scoping do
+    #     Comment.first # SELECT * FROM comments WHERE post_id = 1
+    #   end
+    #
+    # Please check unscoped if you want to remove all previous scopes (including
+    # the default_scope) during the execution of a block.
+    def scoping
+      @klass.send(:with_scope, self, :overwrite) { yield }
+    end
+    
+    def where_values_hash
+      where_values.inject({}) { |values,v| values.merge(v) }
+    end
+
+    def scope_for_create
+      @scope_for_create ||= where_values_hash.merge(create_with_value)
     end
     
     protected
