@@ -223,7 +223,8 @@ module SolandraObject #:nodoc:
       delegate :first, :all, :exists?, :any?, :many?, :to => :scoped
       delegate :destroy, :destroy_all, :delete, :delete_all, :update, :update_all, :to => :scoped
       # delegate :find_each, :find_in_batches, :to => :scoped
-      delegate :order, :limit, :offset, :where, :page, :paginate, :per_page, :each, :group, :total_pages, :search, :fulltext, :to => :scoped
+      delegate :order, :limit, :offset, :where, :where_not, :page, :paginate, :to => :scoped
+      delegate :per_page, :each, :group, :total_pages, :search, :fulltext, :to => :scoped
       delegate :count, :to => :scoped
 
       def logger

@@ -185,25 +185,25 @@ module SolandraObject
       @search = Sunspot.new_search(@klass)
       @where_values.each do |wv|
         wv.each do |k,v|
-          @search.build { with k, v }
+          @search.build { with k, v.blank? ? nil : v }
         end
       end
       
       @where_not_values.each do |wnv|
         wnv.each do |k,v|
-          @search.build { without k, v }
+          @search.build { without k, v.blank? ? nil : v }
         end
       end
       
       @greater_than_values.each do |gtv|
         gtv.each do |k,v|
-          @search.build { with(k).greater_than(v) }
+          @search.build { with(k).greater_than(v.blank? ? nil : v) }
         end
       end
       
       @less_than_values.each do |ltv|
         ltv.each do |k,v|
-          @search.build { with(k).less_than(v) }
+          @search.build { with(k).less_than(v.blank? ? nil : v) }
         end
       end
       

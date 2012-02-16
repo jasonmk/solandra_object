@@ -1,4 +1,5 @@
 require 'active_support/all'
+require 'sunspot_type_overrides'
 
 module SolandraObject
   extend ActiveSupport::Autoload
