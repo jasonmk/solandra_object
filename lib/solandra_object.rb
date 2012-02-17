@@ -20,7 +20,7 @@ module SolandraObject
     autoload :SpawnMethods
   end
   
-  autoload :NamedScope
+  autoload :Scoping
   autoload :Persistence
 end
 

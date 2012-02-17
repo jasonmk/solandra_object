@@ -15,7 +15,9 @@ module SolandraObject
         count = finder_class.search_ids do
           with attribute, value
           Array.wrap(options[:scope]).each do |scope_item|
-            with scope_item, record.send(scope_item)
+            scope_value = record.send(scope_item)
+            scope_value = nil if scope_value.blank?
+            with scope_item, scope_value
           end
         end.reject {|id| id == record.id}.size
         if count > 0

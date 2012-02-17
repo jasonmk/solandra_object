@@ -287,6 +287,10 @@ module SolandraObject
       @scope_for_create ||= where_values_hash.merge(create_with_value)
     end
     
+    # def scoped #:nodoc:
+      # self
+    # end
+    
     protected
       
       def method_missing(method, *args, &block)

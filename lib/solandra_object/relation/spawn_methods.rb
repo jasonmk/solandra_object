@@ -1,8 +1,8 @@
 module SolandraObject
   module SpawnMethods
-    def scoped #:nodoc:
-      self
-    end
+    # def scoped #:nodoc:
+      # self
+    # end
     
     def merge(r) #:nodoc:
       return self unless r
