@@ -297,7 +297,7 @@ module SolandraObject
         if Array.method_defined?(method)
           to_a.send(method, *args, &block)
         elsif @klass.respond_to?(method)
-          @klass.send(method, *args, &block)
+          scoping { @klass.send(method, *args, &block) }
         elsif sunspot_search.respond_to?(method)
           sunspot_search.send(method, *args, &block)
         else
