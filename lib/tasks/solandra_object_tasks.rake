@@ -6,6 +6,7 @@ namespace :so do
     sunspot_config = YAML.load_file(Rails.root.join("config","sunspot.yml"))[Rails.env]["solr"]
     Net::HTTP.start(sunspot_config["hostname"], sunspot_config["port"]) do |http|
       path = sunspot_config["path"].split(/\//).insert(2, "schema").join("/")
+      puts "Posting new schema to #{path}"
       http.post(path, schema_file)
     end
   end
@@ -14,7 +15,9 @@ namespace :so do
   task :reindex => :environment do
     Sunspot.remove_all!
     Rails.root.join("app","models").entries.grep(/\.rb$/).each do |e|
-      e.to_s.split(/\./).first.camelize.constantize.reindex
+      klass = e.to_s.split(/\./).first.camelize
+      puts "Reindexing #{klass}"
+      klass.constantize.reindex
     end
   end
 end

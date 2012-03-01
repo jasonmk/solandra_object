@@ -16,11 +16,11 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["spec/**/*"]
 
-  s.add_dependency "rails", "~> 3.1.1"
+  s.add_dependency "rails", "~> 3.2.1"
   s.add_dependency "jkusar-cassandra_object", "~> 2.8.8"
   s.add_dependency "sunspot_rails", "~> 1.3.0"
 
-  s.add_development_dependency "rspec-rails", "~> 2.8.0.pre2"
+  s.add_development_dependency "rspec-rails", "~> 2.8.0"
   s.add_development_dependency "ruby-debug"
   s.add_development_dependency "rcov"
 end
