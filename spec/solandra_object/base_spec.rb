@@ -13,7 +13,7 @@ describe SolandraObject::Base do
   
   it "should run after_save" do
     p = Person.new(:name => "Jason")
-    p.save
+    p.save!
     p.instance_variable_get(:@after_save_ran).should == "yup"
   end
 end

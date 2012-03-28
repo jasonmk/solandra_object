@@ -77,7 +77,7 @@ module SolandraObject
           end
 
         else
-          scoped.readonly(nil).send(method, *args, &block)
+          scoped.send(method, *args, &block)
         end
       end
       

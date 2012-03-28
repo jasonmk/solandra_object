@@ -27,6 +27,7 @@ end
 require 'solandra_object/railtie' if defined?(Rails)
 require 'solandra_object/errors'
 require 'solandra_object/sunspot_types'
+require 'solr_no_escape'
 
 if Rails.env.test?
   # In order to run the unit tests properly, we need to clear out the

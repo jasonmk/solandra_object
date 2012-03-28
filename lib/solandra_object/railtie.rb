@@ -9,6 +9,8 @@ module SolandraObject
         Sunspot::Adapters::DataAccessor.register(SolandraObject::SunspotAdapters::SolandraObjectDataAccessor, SolandraObject::Base)
         include(Sunspot::Rails::Searchable)
       end
+      config = YAML.load_file(Rails.root.join("config", "cassandra.yml"))
+      CassandraObject::Base.establish_connection(config[Rails.env].symbolize_keys)
     end
     
     rake_tasks do

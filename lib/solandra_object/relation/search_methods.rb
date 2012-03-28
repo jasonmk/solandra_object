@@ -235,6 +235,12 @@ module SolandraObject
         @relation, @attribute = relation, attribute
       end
       
+      def equal_to(value) #:nodoc:
+        @relation.clone.tap do |r|
+          r.where_values << {@attribute => value}
+        end
+      end
+      
       def greater_than(value) #:nodoc:
         @relation.clone.tap do |r|
           r.greater_than_values << {@attribute => value}

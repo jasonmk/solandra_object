@@ -185,25 +185,25 @@ module SolandraObject
       @search = Sunspot.new_search(@klass)
       @where_values.each do |wv|
         wv.each do |k,v|
-          @search.build { with k, v.blank? ? nil : v }
+          @search.build { with k, v.blank? ? nil : SolandraObject::Relation.downcase_query(v) }
         end
       end
       
       @where_not_values.each do |wnv|
         wnv.each do |k,v|
-          @search.build { without k, v.blank? ? nil : v }
+          @search.build { without k, v.blank? ? nil : SolandraObject::Relation.downcase_query(v) }
         end
       end
       
       @greater_than_values.each do |gtv|
         gtv.each do |k,v|
-          @search.build { with(k).greater_than(v.blank? ? nil : v) }
+          @search.build { with(k).greater_than(v.blank? ? nil : SolandraObject::Relation.downcase_query(v)) }
         end
       end
       
       @less_than_values.each do |ltv|
         ltv.each do |k,v|
-          @search.build { with(k).less_than(v.blank? ? nil : v) }
+          @search.build { with(k).less_than(v.blank? ? nil : SolandraObject::Relation.downcase_query(v)) }
         end
       end
       
@@ -223,7 +223,7 @@ module SolandraObject
       
       @fulltext_values.each do |ftv|
         @search.build do 
-          fulltext ftv[:query] do
+          fulltext SolandraObject::Relation.downcase_query(ftv[:query]) do
             if(ftv[:fields])
               fields ftv[:fields]
             end
@@ -290,6 +290,23 @@ module SolandraObject
     # def scoped #:nodoc:
       # self
     # end
+    
+    # Everything that gets indexed into solr is downcased as part of the analysis phase.
+    # Normally, this is done to the query as well, but if your query includes wildcards
+    # then analysis isn't performed.  This means that the query does not get downcased.
+    # We therefore need to perform the downcasing ourselves.  This does it while still
+    # leaving boolean operations (AND, OR, NOT) upcased.
+    def self.downcase_query(value)
+      if(value.is_a?(String))
+        value.split(/\bAND\b/).collect do |a|
+          a.split(/\bOR\b/).collect do |o| 
+            o.split(/\bNOT\b/).collect do |n| 
+              n.downcase
+            end.join("NOT")
+          end.join("OR")
+        end.join("AND")
+      end
+    end
     
     protected
       

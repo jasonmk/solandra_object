@@ -11,7 +11,7 @@ describe SolandraObject::Relation do
         Hobby.create(:name => "biking", :complexity => 1.0)
         Hobby.create(:name => "skydiving", :complexity => 4.0)
         Sunspot.commit
-        
+        debugger
         @relation.where(:complexity).greater_than(2.0).destroy_all
         Sunspot.commit
         @relation.count.should == 1
