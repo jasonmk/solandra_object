@@ -67,6 +67,11 @@ module SolandraObject
       end
     end
     
+    # Returns the current page for will_paginate compatibility
+    def current_page
+      self.page_value.try(:to_i)
+    end
+    
     # Gets a default scope with no conditions or search attributes set.
     def default_scope
       clone.tap do |r|
@@ -305,6 +310,8 @@ module SolandraObject
             end.join("NOT")
           end.join("OR")
         end.join("AND")
+      else
+        value
       end
     end
     
