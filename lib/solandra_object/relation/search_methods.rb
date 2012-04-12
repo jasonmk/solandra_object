@@ -147,6 +147,31 @@ module SolandraObject
       end
     end
     
+    # By default, SolandraObject will try to pick the right method of performing
+    # a search.  You can use this method to force it to make the query via SOLR.
+    #
+    # NOTE that the time between when a record is placed into Cassandra and when
+    # it becomes available in SOLR is not guaranteed to be insignificant.  It's
+    # very possible to insert a new record and not find it when immediately doing
+    # a SOLR search for it.
+    def with_solr
+      clone.tap do |r|
+        r.use_solr_value = true
+      end
+    end
+    
+    # By default, SolandraObject will try to pick the right method of performing
+    # a search.  You can use this method to force it to make the query via
+    # cassandra.
+    #
+    # NOTE that this method assumes that you have all the proper secondary indexes
+    # in place before you attempt to use it.  If not, you will get an error. 
+    def with_cassandra
+      clone.tap do |r|
+        r.use_solr_value = false
+      end
+    end
+    
     # Specifies restrictions (scoping) on the result set. Expects a hash
     # in the form +attribute => value+ for equality comparisons.
     #

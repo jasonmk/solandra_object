@@ -1,7 +1,7 @@
 module SolandraObject
   class Relation
     MULTI_VALUE_METHODS = [:group, :order, :where, :where_not, :fulltext, :search, :greater_than, :less_than]
-    SINGLE_VALUE_METHODS = [:offset, :page, :per_page, :reverse_order, :query_parser]
+    SINGLE_VALUE_METHODS = [:offset, :page, :per_page, :reverse_order, :query_parser, :consistency, :ttl, :use_solr]
     
     Relation::MULTI_VALUE_METHODS.each do |m|
       attr_accessor :"#{m}_values"
@@ -15,6 +15,7 @@ module SolandraObject
     include ModificationMethods
     include FinderMethods
     include SpawnMethods
+    include Cql
     
     attr_reader :klass, :column_family, :loaded
     alias :loaded? :loaded
@@ -31,6 +32,8 @@ module SolandraObject
       @per_page_value = @klass.default_page_size
       @page_value = 1
       @offset_value = 0
+      @use_solr = true
+      @consistency = "LOCAL_QUORUM"
       @extensions = []
       @create_with_value = {}
       apply_default_scope

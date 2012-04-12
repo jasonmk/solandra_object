@@ -1,3 +1,4 @@
+require 'sunspot/rails'
 module SolandraObject
   module AttributeMethods
     extend ActiveSupport::Concern

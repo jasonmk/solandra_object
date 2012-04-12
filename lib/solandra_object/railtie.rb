@@ -10,11 +10,16 @@ module SolandraObject
         include(Sunspot::Rails::Searchable)
       end
       config = YAML.load_file(Rails.root.join("config", "cassandra.yml"))
-      CassandraObject::Base.establish_connection(config[Rails.env].symbolize_keys)
+      SolandraObject::Base.establish_connection(config[Rails.env].symbolize_keys)
     end
     
     rake_tasks do
       load 'tasks/solandra_object_tasks.rake'
+      load 'solandra_object/tasks/ks.rake'
+    end
+    
+    generators do
+      require 'solandra_object/generators/migration_generator'
     end
   end
 end

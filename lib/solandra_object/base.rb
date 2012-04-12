@@ -1,6 +1,8 @@
-require 'jkusar-cassandra_object'
 require 'active_record/dynamic_finder_match'
 require 'active_record/dynamic_scope_match'
+require 'solandra_object/log_subscriber'
+require 'solandra_object/types'
+require 'solandra_object/errors'
 module SolandraObject #:nodoc:
   # = Solandra Object
   #
@@ -163,20 +165,38 @@ module SolandraObject #:nodoc:
   #   triggered the error.
   #
   # See the documentation for SearchMethods for more examples of using the search API.
-  class Base < ::CassandraObject::Base
+  class Base# < ::CassandraObject::Base
+    extend ActiveModel::Naming
+    include ActiveModel::Conversion
+    extend ActiveSupport::DescendantsTracker
+    include ActiveModel::MassAssignmentSecurity
+    include ActiveModel::Validations::Callbacks
+    
+    include Connection
+    include Consistency
+    include Identity
+    include FinderMethods
+    include Batches
     include AttributeMethods
+    include AttributeMethods::Dirty
+    include AttributeMethods::Typecasting
+    include Callbacks
     include CassandraFinderMethods
     include Validations
     include Reflection
     include Associations
     include Scoping
     include Persistence
-    include ActiveModel::MassAssignmentSecurity
-    include ActiveModel::Validations::Callbacks
+    include Timestamps
+    include Serialization
+    include Migrations
+    include Mocking
     
     # Stores the default scope for the class
     class_attribute :default_scopes, :instance_writer => false
     self.default_scopes = []
+    attr_reader :attributes
+    attr_accessor :key
     
     def initialize(attributes = {})
       @key = attributes.delete(:key)
@@ -210,6 +230,25 @@ module SolandraObject #:nodoc:
       @attributes.frozen?
     end
     
+    def to_param
+      id.to_s if persisted?
+    end
+
+    def hash
+      id.hash
+    end
+
+    def ==(comparison_object)
+      comparison_object.equal?(self) ||
+        (comparison_object.instance_of?(self.class) &&
+          comparison_object.key == key &&
+          !comparison_object.new_record?)
+    end
+
+    def eql?(comparison_object)
+      self == (comparison_object)
+    end
+    
     private
       def populate_with_current_scope_attributes
         return unless self.class.scope_attributes?
@@ -225,8 +264,24 @@ module SolandraObject #:nodoc:
       # delegate :find_each, :find_in_batches, :to => :scoped
       delegate :order, :limit, :offset, :where, :where_not, :page, :paginate, :to => :scoped
       delegate :per_page, :each, :group, :total_pages, :search, :fulltext, :to => :scoped
-      delegate :count, :to => :scoped
+      delegate :count, :find, :first, :first!, :last, :last!, :to => :scoped
 
+      def column_family=(column_family)
+        @column_family = column_family
+      end
+
+      def column_family
+        @column_family || name.pluralize
+      end
+
+      def base_class
+        klass = self
+        while klass.superclass != Base
+          klass = klass.superclass
+        end
+        klass
+      end
+      
       def logger
         Rails.logger
       end
@@ -335,9 +390,6 @@ module SolandraObject #:nodoc:
         def relation #:nodoc:
           @relation ||= Relation.new(self, column_family)
         end
-        
-      protected
-        
     end
   end
 end

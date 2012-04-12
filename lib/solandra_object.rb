@@ -1,15 +1,24 @@
 require 'active_support/all'
 require 'sunspot_type_overrides'
+require 'cassandra/0.8'
 
 module SolandraObject
   extend ActiveSupport::Autoload
   
-  autoload :Base
-  autoload :AttributeMethods
-  autoload :CassandraFinderMethods
-  autoload :SunspotAdapters
-  autoload :Validations
   autoload :Associations
+  autoload :AttributeMethods
+  autoload :Base
+  autoload :Batches
+  autoload :Callbacks
+  autoload :CassandraFinderMethods
+  autoload :Collection
+  autoload :Connection
+  autoload :Consistency
+  autoload :Cursor
+  autoload :Identity
+  autoload :Migrations
+  autoload :Mocking
+  autoload :Persistence
   autoload :Reflection
   autoload :Relation
   
@@ -18,10 +27,58 @@ module SolandraObject
     autoload :ModificationMethods
     autoload :SearchMethods
     autoload :SpawnMethods
+    autoload :Cql
   end
   
+  autoload :Schema
   autoload :Scoping
-  autoload :Persistence
+  autoload :Serialization
+  autoload :SunspotAdapters
+  autoload :Timestamps
+  autoload :Type
+  autoload :Validations
+  
+  module AttributeMethods
+    extend ActiveSupport::Autoload
+
+    eager_autoload do
+      autoload :Definition
+      autoload :Dirty
+      autoload :Typecasting
+    end
+  end
+
+  module Tasks
+    extend ActiveSupport::Autoload
+    autoload :Keyspace
+    autoload :ColumnFamily
+  end
+
+  module Types
+    extend ActiveSupport::Autoload
+    
+    autoload :BaseType
+    autoload :ArrayType
+    autoload :BooleanType
+    autoload :DateType
+    autoload :FloatType
+    autoload :IntegerType
+    autoload :JsonType
+    autoload :StringType
+    autoload :TimeType
+    autoload :TimeWithZoneType
+  end
+end
+
+# Fixup the thrift library
+require "thrift"
+module Thrift
+  class BinaryProtocol
+    def write_string(str)
+      write_i32(str.bytesize)
+      trans.write(str)
+    end
+  end
 end
 
 require 'solandra_object/railtie' if defined?(Rails)

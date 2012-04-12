@@ -35,6 +35,7 @@ module SolandraObject
     #   Person.where(:administrator => 1).order(:created_on => :desc).find(1)
     #
     # Note that the returned order is undefined unless you give a specific +:order+ clause.
+    # Further note that order is handled in memory and so does suffer a performance penalty.
     #
     # ==== Examples
     #
@@ -136,11 +137,11 @@ module SolandraObject
       end
       
       def find_one(id)
-        where(:unique_id => id).first || raise(RecordNotFound, "Couldn't find #{@klass.name} with #{primary_key}=#{id}")
+        with_cassandra.where(:key => id).first || raise(RecordNotFound, "Couldn't find #{@klass.name} with #{primary_key}=#{id}")
       end
   
       def find_some(ids)
-        result = where(:unique_id => ids).all
+        result = with_cassandra.where(:key => ids).all
   
         expected_size =
           if @limit_value && ids.size > @limit_value
