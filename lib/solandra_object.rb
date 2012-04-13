@@ -14,6 +14,7 @@ module SolandraObject
   autoload :Collection
   autoload :Connection
   autoload :Consistency
+  autoload :Cql
   autoload :Cursor
   autoload :Identity
   autoload :Migrations
@@ -27,7 +28,6 @@ module SolandraObject
     autoload :ModificationMethods
     autoload :SearchMethods
     autoload :SpawnMethods
-    autoload :Cql
   end
   
   autoload :Schema

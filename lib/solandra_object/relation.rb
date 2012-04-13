@@ -15,7 +15,6 @@ module SolandraObject
     include ModificationMethods
     include FinderMethods
     include SpawnMethods
-    include Cql
     
     attr_reader :klass, :column_family, :loaded
     alias :loaded? :loaded

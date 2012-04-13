@@ -128,7 +128,6 @@ module SolandraObject
       def write #:nodoc:
         changed_attributes = changed.inject({}) { |h, n| h[n] = read_attribute(n); h }
         self.class.write(key, changed_attributes, schema_version)
-        Sunspot.commit
       end
   end
 end
