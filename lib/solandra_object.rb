@@ -1,6 +1,5 @@
 require 'active_support/all'
-require 'sunspot_type_overrides'
-require 'cassandra/0.8'
+require 'cassandra-cql/1.0'
 
 module SolandraObject
   extend ActiveSupport::Autoload
@@ -18,7 +17,7 @@ module SolandraObject
   autoload :Cursor
   autoload :Identity
   autoload :Migrations
-  autoload :Mocking
+  #autoload :Mocking
   autoload :Persistence
   autoload :Reflection
   autoload :Relation
@@ -83,7 +82,6 @@ end
 
 require 'solandra_object/railtie' if defined?(Rails)
 require 'solandra_object/errors'
-require 'solandra_object/sunspot_types'
 require 'solr_no_escape'
 
 if Rails.env.test?

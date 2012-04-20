@@ -14,9 +14,10 @@ module SolandraObject
 
     module ClassMethods
       THRIFT_LEVELS = {
-        :one    => Cassandra::Consistency::ONE,
-        :quorum => Cassandra::Consistency::QUORUM,
-        :all    => Cassandra::Consistency::ALL
+        :one    => 'ONE',
+        :quorum => 'QUORUM',
+        :local_quorum => 'LOCAL_QUORUM',
+        :each_quorum => 'EACH_QUORUM'
       }
 
       def thrift_read_consistency

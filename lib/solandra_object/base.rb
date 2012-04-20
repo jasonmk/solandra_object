@@ -190,7 +190,7 @@ module SolandraObject #:nodoc:
     include Timestamps
     include Serialization
     include Migrations
-    include Mocking
+    # include Mocking
     
     # Stores the default scope for the class
     class_attribute :default_scopes, :instance_writer => false

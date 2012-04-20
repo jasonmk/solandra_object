@@ -13,7 +13,7 @@ module SolandraObject
       }
       def establish_connection(spec)
         spec.reverse_merge!(DEFAULT_OPTIONS)
-        self.connection = Cassandra.new(spec[:keyspace], spec[:servers], spec[:thrift].symbolize_keys!)
+        self.connection = CassandraCQL::Database.new(spec[:servers], :keyspace => spec[:keyspace])
       end
     end
   end

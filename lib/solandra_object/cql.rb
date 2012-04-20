@@ -1,16 +1,14 @@
 module SolandraObject
-  class Cql
+  module Cql
+    extend ActiveSupport::Autoload
     class << self
-      def perform_update(model)
-        return true unless model.changed?
-        model.updated_at = Time.now
-        updated_attributes = model.changes.keys
-        "UPDATE #{model.column_family} SET "
-      end
-      
-      def sanitize(str)
-        
+      def for_class(klass)
+        @cql[klass] ||= SolandraObject::Cql::ColumnFamily.new(klass)
       end
     end
+    
+    autoload :ColumnFamily
+    autoload :Consistency
+    autoload :Select
   end
 end
