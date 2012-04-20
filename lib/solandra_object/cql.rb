@@ -9,6 +9,7 @@ module SolandraObject
     
     autoload :ColumnFamily
     autoload :Consistency
+    autoload :Insert
     autoload :Select
   end
 end
