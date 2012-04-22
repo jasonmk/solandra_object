@@ -9,7 +9,10 @@ module SolandraObject
     
     autoload :ColumnFamily
     autoload :Consistency
+    autoload :Delete
     autoload :Insert
     autoload :Select
+    autoload :Truncate
+    autoload :Update
   end
 end
