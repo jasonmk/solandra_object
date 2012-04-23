@@ -17,7 +17,8 @@ module SolandraObject
         :one    => 'ONE',
         :quorum => 'QUORUM',
         :local_quorum => 'LOCAL_QUORUM',
-        :each_quorum => 'EACH_QUORUM'
+        :each_quorum => 'EACH_QUORUM',
+        :all => 'ALL'
       }
 
       def thrift_read_consistency
