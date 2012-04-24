@@ -74,6 +74,16 @@ module SolandraObject
       self.page_value.try(:to_i)
     end
     
+    # current_page - 1 or nil if there is no previous page
+    def previous_page
+      current_page > 1 ? (current_page - 1) : nil
+    end
+
+    # current_page + 1 or nil if there is no next page
+    def next_page
+      current_page < total_pages ? (current_page + 1) : nil
+    end
+    
     # Gets a default scope with no conditions or search attributes set.
     def default_scope
       clone.tap do |r|
@@ -163,7 +173,7 @@ module SolandraObject
     # Returns a standard array thus no more methods may be chained.
     def to_a
       return @results if loaded?
-      @results = sunspot_search.execute.results
+      @results = query_via_solr
       @loaded = true
       @results
     end
@@ -185,44 +195,83 @@ module SolandraObject
         super
     end
     
-    # Creates and returns an actual sunspot search object based on the
-    # information that is stored in this +Relation+.
-    def sunspot_search
-      return @search if @search
-      @search = Sunspot.new_search(@klass)
+    def query_via_cql
+      
+    end
+    
+    def query_via_solr
+      filter_queries = []
+      orders = []
       @where_values.each do |wv|
         wv.each do |k,v|
-          @search.build { with k, v.blank? ? nil : SolandraObject::Relation.downcase_query(v) }
+          filter_queries << "#{k}:#{v}" 
         end
       end
       
       @where_not_values.each do |wnv|
         wnv.each do |k,v|
-          @search.build { without k, v.blank? ? nil : SolandraObject::Relation.downcase_query(v) }
+          filter_queries << "-#{k}:#{v}"
         end
       end
       
       @greater_than_values.each do |gtv|
         gtv.each do |k,v|
-          @search.build { with(k).greater_than(v.blank? ? nil : SolandraObject::Relation.downcase_query(v)) }
+          filter_queries << "#{k}:[#{v} TO *]"
         end
       end
       
       @less_than_values.each do |ltv|
         ltv.each do |k,v|
-          @search.build { with(k).less_than(v.blank? ? nil : SolandraObject::Relation.downcase_query(v)) }
+          filter_queries << "#{k}:[* TO #{v}]"
         end
       end
       
       @order_values.each do |ov|
         ov.each do |k,v|
           if(@reverse_order_value)
-            @search.build { order_by k, (v == :asc ? :desc : :asc) }
+            orders << "#{k} #{v == :asc ? 'desc' : 'asc'}"
           else
-            @search.build { order_by k, v }
+            orders << "#{k} #{v == :asc ? 'asc' : 'desc'}"
           end
         end
       end
+      
+      sort = orders.join(",")
+      
+      if @fulltext_values.empty?
+        q = "*:*"
+      else
+        q = @fulltext_values.collect {|ftv| "(" + ftv[:query] + ")"}.join(' AND ')
+      end
+      
+      
+      #TODO highlighting and fielded queries of fulltext
+      
+      params = {:q => q}
+      unless sort.empty?
+        params[:sort] = sort
+      end
+      
+      unless filter_queries.empty?
+        params[:fq] = filter_queries
+      end
+      
+      #TODO Need to escape URL stuff (I think)
+      response = rsolr.paginate(@page_value, @per_page_value, 'select', :params => params)["response"]
+      results = SolandraObject::Collection.new
+      results.total_entries = response['numFound'].to_i
+      response['docs'].each do |doc|
+        key = doc.delete('id')
+        results << @klass.instantiate(key,doc)
+      end
+      results
+    end
+    
+    # Creates and returns an actual sunspot search object based on the
+    # information that is stored in this +Relation+.
+    def sunspot_search
+      return @search if @search
+      @search = Sunspot.new_search(@klass)
       
       @group_values.each do |gv|
         @search.build { group gv }
@@ -329,6 +378,10 @@ module SolandraObject
         else
           super
         end
+      end
+      
+      def rsolr
+        @Rsolr ||= RSolr.connect :url => "http://localhost:8983/solr/#{SolandraObject::Base.connection.keyspace}.#{@klass.column_family}"
       end
   end
 end

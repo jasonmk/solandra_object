@@ -50,11 +50,11 @@ module SolandraObject
         
         first_entry = @columns.shift
         
-        stmt << "#{first_entry.first} = ? "
+        stmt << "#{first_entry.first.to_s} = ? "
         values << first_entry.last
         
         @columns.each do |k,v|
-          stmt << ", #{k} = ? "
+          stmt << ", #{k.to_s} = ? "
           values << v
         end
         

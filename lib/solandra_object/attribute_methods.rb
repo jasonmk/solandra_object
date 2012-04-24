@@ -8,7 +8,7 @@ module SolandraObject
       alias :[] :read_attribute
       alias :[]= :write_attribute
 
-      attribute_method_suffix("", "=")
+      attribute_method_suffix("=")
     end
     
     module ClassMethods

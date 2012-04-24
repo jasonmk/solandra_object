@@ -33,7 +33,7 @@ module SolandraObject
         values = []
         keys = []
         @columns.each do |k,v|
-          keys << k
+          keys << k.to_s
           values << v
         end
         stmt = "INSERT INTO #{@klass.column_family} (#{keys.join(',')}) VALUES (#{('?'*keys.size).split(//).join(',')}) USING CONSISTENCY #{@consistency} "
