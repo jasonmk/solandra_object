@@ -1,46 +1,70 @@
 module SolandraObject
   module Tasks
     class ColumnFamily
-      COMPARATOR_TYPES = { :time      => 'TimeUUIDType',
-                           :timestamp => 'TimeUUIDType',
-                           :long      => 'LongType',
-                           :string    => 'BytesType',
-                           :utf8      => 'UTF8Type' }
+      COMPARATOR_TYPES = [:blob, :ascii, :text, :varint, :bigint, :uuid, :timestamp, :boolean, :float, :doublt, :decimal]
 
-      COLUMN_TYPES = {     :standard  => 'Standard',
-                           :super     => 'Super' }
+      COLUMN_TYPES = [:standard, :super]
 
       def initialize(keyspace)
         @keyspace = keyspace
       end
 
       def exists?(name)
-        connection.schema.cf_defs.find { |cf_def| cf_def.name == name.to_s }
+        connection.schema.column_family_names.include?(name)
       end
 
       def create(name, &block)
-        cf = Cassandra::ColumnFamily.new
-        cf.name = name.to_s
-        cf.keyspace = @keyspace.to_s
-        cf.comparator_type = 'BytesType'
-        cf.column_type = 'Standard'
+        cql = SolandraObject::Cql::CreateColumnFamily.new(name.to_s)
+        cql.comparator_type = 'text'
+        cql.column_type = 'Standard'
 
         block.call cf if block
 
-        post_process_column_family(cf)
-        connection.add_column_family(cf)
+        connection.execute_cql_query(cql.to_cql)
       end
 
       def drop(name)
-        connection.drop_column_family(name.to_s)
+        connection.execute_cql_query(SolandraObject::Cql::DropColumnFamily.new(name.to_s).to_cql)
       end
 
       def rename(old_name, new_name)
-        connection.rename_column_family(old_name.to_s, new_name.to_s)
+        raise NotImplementedError, "Renaming of column families is not currently supported"
       end
 
       def clear(name)
-        connection.truncate!(name.to_s)
+        connection.execute_cql_query(SolandraObject::Cql::Truncate.new(name.to_s).to_cql)
+      end
+      
+      def generate_solr_schema(model)
+        @fields = []
+        @copy_fields = []
+        @fulltext_fields = []
+        model.attribute_definitions.values.each do |attr|
+          coder = attr.coder
+          if coder.options[:solr_type] && (coder.options[:indexed] || coder.options[:stored])
+          @fields.push({ :name => attr.name,
+                         :type => coder.options[:solr_type].to_s,
+                         :indexed => coder.options[:indexed].to_s,
+                         :stored => coder.options[:stored].to_s,
+                         :multi_valued => coder.options[:multi_valued].to_s })
+          end
+          if coder.options[:sortable] && coder.options[:tokenized]
+            @fields.push({ :name => "sort_" + attr.name,
+                           :type => "string",
+                           :indexed => true,
+                           :stored => false,
+                           :multi_valued => false })
+            @copy_fields.push({ :source => attr.name, :dest => "sort_" + attr.name })
+          end
+          if coder.options[:fulltext]
+            @fulltext_fields << attr.name
+          end
+          ERB.new(File.read(File.join(File.dirname(__FILE__),"..","..","..","config","schema.xml.erb"))).result(binding)
+        end
+      end
+      
+      def upload_solr_schemas
+        
       end
 
       private
@@ -73,15 +97,3 @@ module SolandraObject
   end
 
 end
-
-class Cassandra
-  class ColumnFamily
-    def with_fields(options)
-      struct_fields.collect { |f| f[1][:name] }.each do |f|
-        send("#{f}=", options[f.to_sym] || options[f.to_s])
-      end
-      self
-    end
-  end
-end
-

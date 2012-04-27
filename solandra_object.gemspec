@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   #s.add_runtime_dependency('cassandra', "~> 0.12.0")
   #s.add_dependency "jkusar-cassandra_object", "~> 2.8.8"
   s.add_dependency "sunspot_rails", "~> 1.3.0"
-
+  
   s.add_development_dependency "rspec-rails", "~> 2.9.0"
   s.add_development_dependency "ruby-debug"
   s.add_development_dependency "rcov"

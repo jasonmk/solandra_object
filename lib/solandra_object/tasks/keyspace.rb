@@ -11,25 +11,27 @@ module SolandraObject
       end
 
       def exists?(name)
-        connection.keyspaces.include? name.to_s
+        connection.keyspaces.collect(&:name).include? name.to_s
       end
 
       def create(name, options = {})
         opts = { :name => name.to_s,
-                 :strategy_class => 'org.apache.cassandra.locator.SimpleStrategy',
-                 :replication_factor => 1,
-                 :cf_defs => [] }.merge(options)
+                 :strategy_class => 'SimpleStrategy',
+                 :replication_factor => 1}.merge(options)
 
-        ks = Cassandra::Keyspace.new.with_fields(opts)
-        connection.add_keyspace ks
+        cql = SolandraObject::Cql::CreateKeyspace(opts.delete(:name))
+        cql.strategy_class(opts.delete(:strategy_class))
+        cql.strategy_options(opts)
+        
+        connection.execute_cql_query(cql.to_cql)
       end
 
       def drop(name)
-        connection.drop_keyspace name.to_s
+        connection.execute_cql_query(SolandraObject::Cql::DropKeyspace(name.to_s).to_cql)
       end
 
       def set(name)
-        connection.keyspace = name.to_s
+        connection.execute_cql_query(SolandraObject::Cql::UseKeyspace(name.to_s).to_cql)
       end
 
       def get
@@ -62,22 +64,11 @@ module SolandraObject
 
       def connection
         unless @connection
-          c = SolandraObject::Base.connection
-          @connection = Cassandra.new('system', c.servers, c.thrift_client_options)
+          config = YAML.load_file(Rails.root.join("config", "cassandra.yml"))
+          @connection = CassandraCQL::Database.new(config["servers"], :keyspace => 'system')
         end
         @connection
       end
-    end
-  end
-end
-
-class Cassandra
-  class Keyspace
-    def with_fields(options)
-      struct_fields.collect { |f| f[1][:name] }.each do |f|
-        send("#{f}=", options[f.to_sym] || options[f.to_s])
-      end
-      self
     end
   end
 end

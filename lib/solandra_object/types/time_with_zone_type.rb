@@ -1,6 +1,7 @@
 module SolandraObject
   module Types
     class TimeWithZoneType < BaseType
+      DEFAULTS = {:solr_type => 'date', :indexed => true, :stored => true, :multi_valued => false, :sortable => true, :tokenized => false, :fulltext => false}
       def encode(time)
         raise ArgumentError.new("#{self} requires a Time") unless time.kind_of?(Time)
         time.utc.xmlschema(6)

@@ -1,6 +1,7 @@
 module SolandraObject
   module Types
     class DateType < BaseType
+      DEFAULTS = {:solr_type => 'date', :indexed => true, :stored => true, :multi_valued => false, :sortable => true, :tokenized => false, :fulltext => false}
       FORMAT = '%Y-%m-%d'
       REGEX = /\A\d{4}-\d{2}-\d{2}\Z/
 

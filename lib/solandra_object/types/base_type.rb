@@ -3,7 +3,7 @@ module SolandraObject
     class BaseType
       attr_accessor :options
       def initialize(options = {})
-        @options = options
+        @options = self.class::DEFAULTS.merge(options)
       end
 
       def default

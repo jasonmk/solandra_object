@@ -6,7 +6,7 @@ class Person < SolandraObject::Base
   has_and_belongs_to_many :hobbies
   
   key :uuid
-  string :name
+  text :name, :sortable => true
   date :birthdate
   string :nickname
   

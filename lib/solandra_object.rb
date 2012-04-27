@@ -57,6 +57,7 @@ module SolandraObject
     extend ActiveSupport::Autoload
     
     autoload :BaseType
+    autoload :BinaryType
     autoload :ArrayType
     autoload :BooleanType
     autoload :DateType
@@ -64,6 +65,7 @@ module SolandraObject
     autoload :IntegerType
     autoload :JsonType
     autoload :StringType
+    autoload :TextType
     autoload :TimeType
     autoload :TimeWithZoneType
   end

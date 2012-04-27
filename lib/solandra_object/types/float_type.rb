@@ -1,6 +1,7 @@
 module SolandraObject
   module Types
     class FloatType < BaseType
+      DEFAULTS = {:solr_type => 'float', :indexed => true, :stored => true, :multi_valued => false, :sortable => true, :tokenized => false, :fulltext => false}
       REGEX = /\A[-+]?(\d+(\.\d+)?|\.\d+)\Z/
       def encode(float)
         raise ArgumentError.new("#{self} requires a Float") unless float.kind_of?(Float)

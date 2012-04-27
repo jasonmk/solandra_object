@@ -1,6 +1,7 @@
 module SolandraObject
   module Types
     class ArrayType < BaseType
+      DEFAULTS = {:solr_type => 'array', :indexed => true, :stored => true, :multi_valued => false, :sortable => false, :tokenized => true, :fulltext => false}
       class DirtyArray < Array
         attr_accessor :record, :name, :options
         def initialize(record, name, array, options)
@@ -57,15 +58,15 @@ module SolandraObject
 
       def encode(array)
         raise ArgumentError.new("#{self} requires an Array") unless array.kind_of?(Array)
-        array.to_a.to_json
+        ar = Array(array)
+        ar.uniq! if options[:unique]
+        ar.join("&&&&")
       end
 
       def decode(str)
         return [] if str.blank?
-
-        ActiveSupport::JSON.decode(str).tap do |array|
-          array.uniq! if options[:unique]
-        end
+        
+        str.split(/&&&&/)
       end
 
       def wrap(record, name, value)

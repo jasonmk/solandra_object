@@ -1,6 +1,7 @@
 module SolandraObject
   module Types
     class TimeType < BaseType
+      DEFAULTS = {:solr_type => 'date', :indexed => true, :stored => true, :multi_valued => false, :sortable => true, :tokenized => false, :fulltext => false}
       # lifted from the implementation of Time.xmlschema and simplified
       REGEX = /\A\s*
                 (-?\d+)-(\d\d)-(\d\d)

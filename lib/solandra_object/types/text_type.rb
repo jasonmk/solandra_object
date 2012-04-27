@@ -1,7 +1,7 @@
 module SolandraObject
   module Types
-    class StringType < BaseType
-      DEFAULTS = {:solr_type => 'string', :indexed => true, :stored => true, :multi_valued => false, :sortable => true, :tokenized => false, :fulltext => false}
+    class TextType < BaseType
+      DEFAULTS = {:solr_type => 'text', :indexed => true, :stored => true, :multi_valued => false, :sortable => false, :tokenized => true, :fulltext => true}
       def encode(str)
         raise ArgumentError.new("#{self} requires a String") unless str.kind_of?(String)
         str.dup

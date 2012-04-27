@@ -17,13 +17,25 @@ module SolandraObject#:nodoc:
         self
       end
       
-      def limit(limit)
-        @limit = limit
-        self
+      # Migration helpers
+      def comment=(comment)
+        with("comment" => comment)
+      end
+      
+      def comparator=(comp)
+        with("comparator" => comp)
+      end
+      
+      def default_validation=(val)
+        with("default_validation" => val)
+      end
+      
+      def column_type=(type)
+        # TODO: Ignored till CQL supports super-columns
       end
       
       def to_cql
-        stmt = "CREATE COLUMNFAMILY #{cf_name} (key uuid PRIMARY KEY"
+        stmt = "CREATE COLUMNFAMILY #{@cf_name} (key uuid PRIMARY KEY"
         @columns.each do |name,type|
           stmt << ", #{name} #{type}"
         end
@@ -31,10 +43,10 @@ module SolandraObject#:nodoc:
         unless @storage_parameters.empty?
           stmt << " WITH "
           first_parm = @storage_parameter.shift
-          stmt << "#{first_parm.first} = '#{first_parm.last}'"
+          stmt << "#{first_parm.first.to_s} = '#{first_parm.last.to_s}'"
           
           @storage_parameters.each do |key, value|
-            stmt << " AND #{key} = '#{value}'"
+            stmt << " AND #{key.to_s} = '#{value.to_s}'"
           end
         end
         

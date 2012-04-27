@@ -1,8 +1,9 @@
 module SolandraObject
   module Types
     class BooleanType < BaseType
-      TRUE_VALS = [true, 'true', '1']
-      FALSE_VALS = [false, 'false', '0', '', nil]
+      DEFAULTS = {:solr_type => 'boolean', :indexed => true, :stored => true, :multi_valued => false, :sortable => true, :tokenized => false, :fulltext => false}
+      TRUE_VALS = [true, 'true', '1', 'Y']
+      FALSE_VALS = [false, 'false', '0', '', 'N', nil]
       VALID_VALS = TRUE_VALS + FALSE_VALS
       
       def encode(bool)
