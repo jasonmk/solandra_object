@@ -5,7 +5,7 @@ module SolandraObject
     initializer 'solandra_object.init', :after => 'sunspot_rails.init' do
       ActiveSupport.on_load(:solandra_object) do
       end
-      config = YAML.load_file(Rails.root.join("config", "cassandra.yml"))
+      config = YAML.load_file(Rails.root.join("config", "datastax.yml"))
       SolandraObject::Base.establish_connection(config[Rails.env].symbolize_keys)
     end
     

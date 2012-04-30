@@ -381,7 +381,7 @@ module SolandraObject
       end
       
       def rsolr
-        @Rsolr ||= RSolr.connect :url => "http://localhost:8983/solr/#{SolandraObject::Base.connection.keyspace}.#{@klass.column_family}"
+        @Rsolr ||= RSolr.connect :url => "#{SolandraObject::Base.config[:solr][:url]}/#{SolandraObject::Base.connection.keyspace}.#{@klass.column_family}"
       end
   end
 end

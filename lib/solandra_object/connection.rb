@@ -12,6 +12,7 @@ module SolandraObject
         :thrift => {}
       }
       def establish_connection(spec)
+        SolandraObject::Base.config = spec.with_indifferent_access
         spec.reverse_merge!(DEFAULT_OPTIONS)
         self.connection = CassandraCQL::Database.new(spec[:servers], :keyspace => spec[:keyspace])
       end

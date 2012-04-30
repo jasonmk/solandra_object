@@ -59,12 +59,39 @@ module SolandraObject
           if coder.options[:fulltext]
             @fulltext_fields << attr.name
           end
-          ERB.new(File.read(File.join(File.dirname(__FILE__),"..","..","..","config","schema.xml.erb"))).result(binding)
+          return ERB.new(File.read(File.join(File.dirname(__FILE__),"..","..","..","config","schema.xml.erb"))).result(binding)
         end
       end
       
-      def upload_solr_schemas
+      def upload_solr_schemas(column_family = :all)
+        solrconfig = File.read(File.join(File.dirname(__FILE__),"..","..","..","config","solrconfig.xml"))
+        stopwords = File.read(File.join(File.dirname(__FILE__),"..","..","..","config","stopwords.txt"))
+        models_to_upload = []
         
+        if column_family == :all
+          # Ensure all models are loaded
+          Dir[Rails.root.join("app","models",'*.rb').to_s].each do |file| 
+            require File.basename(file, File.extname(file))
+          end
+          
+          models_to_upload += SolandraObject::Base.models
+        else
+          models_to_upload << column_family.constantize
+        end
+        
+        models_to_upload.each do |model|
+          schema = generate_solr_schema(model)
+          solr_url = "#{SolandraObject::Base.config[:solr][:url]}/resource/#{SolandraObject::Base.config[:keyspace]}.#{model.column_family}"
+          uri = URI.parse(solr_url)
+          Net::HTTP.start(uri.host, uri.port) do |http|
+            puts "Posting Solr Config file to '#{uri.path}/solrconfig.xml'"
+            http.post(uri.path+"/solrconfig.xml", solrconfig)
+            puts "Posting Solr Stopwords file to '#{uri.path}/stopwords.txt'"
+            http.post(uri.path+"/stopwords.txt", stopwords)
+            puts "Posting Solr Schema file to '#{uri.path}/schema.xml'"
+            http.post(uri.path+"/schema.xml", schema)
+          end
+        end
       end
 
       private

@@ -1,13 +1,11 @@
 development:
   servers: ["localhost:9160"]
-  keyspace: "wiki"
+  keyspace: "solandra_object_development"
   strategy_class: "org.apache.cassandra.locator.NetworkTopologyStrategy"
   strategy_options: {"DC1": "1"} 
   replication_factor: 1
-  thrift:
-    timeout: 20
-    retries: 2
-    connect_timeout: 20
+  solr:
+    url: http://localhost:8983/solr
     
 test:
   servers: ["localhost:9160"]
@@ -15,8 +13,6 @@ test:
   strategy_class: "org.apache.cassandra.locator.NetworkTopologyStrategy"
   strategy_options: {"DC1": "1"} 
   replication_factor: 1
-  thrift:
-    timeout: 20
-    retries: 2
-    connect_timeout: 20
+  solr:
+    url: http://localhost:8983/solr
         

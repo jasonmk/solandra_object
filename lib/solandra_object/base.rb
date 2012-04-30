@@ -195,6 +195,13 @@ module SolandraObject #:nodoc:
     # Stores the default scope for the class
     class_attribute :default_scopes, :instance_writer => false
     self.default_scopes = []
+    
+    # Stores the configuration information
+    class_attribute :config
+    
+    class_attribute :models
+    self.models = []
+    
     attr_reader :attributes
     attr_accessor :key
     
@@ -266,6 +273,10 @@ module SolandraObject #:nodoc:
       delegate :per_page, :each, :group, :total_pages, :search, :fulltext, :to => :scoped
       delegate :count, :find, :first, :first!, :last, :last!, :to => :scoped
 
+      def inherited(klass)
+        self.models << klass
+      end
+      
       def column_family=(column_family)
         @column_family = column_family
       end
