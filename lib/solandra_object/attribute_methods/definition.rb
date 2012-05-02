@@ -1,9 +1,10 @@
 module SolandraObject
   module AttributeMethods
     class Definition
-      attr_reader :name, :coder
+      attr_reader :name, :coder, :lazy
       def initialize(name, coder, options)
         @name   = name.to_s
+        @lazy   = options.delete(:lazy)
         @coder  = coder.new(options)
       end
 

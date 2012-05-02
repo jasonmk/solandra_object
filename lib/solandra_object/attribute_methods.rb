@@ -35,6 +35,10 @@ module SolandraObject
         elsif coder.nil?
           raise "Must supply a :coder for #{name}"
         end
+        
+        if(options[:lazy])
+          lazy_attributes << name.to_sym
+        end
 
         attribute_definitions[name.to_sym] = AttributeMethods::Definition.new(name, coder, options)
       end
@@ -45,6 +49,10 @@ module SolandraObject
     end
 
     def read_attribute(name)
+      if(lazy_attributes.include?(name.to_sym) && @attributes[name.to_s].nil?)
+        @attributes[name.to_s] = self.class.select(name).with_cassandra.find(self.id).read_attribute(name)
+      end
+        
       @attributes[name.to_s]
     end
 
