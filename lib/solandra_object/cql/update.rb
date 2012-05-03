@@ -1,6 +1,6 @@
 module SolandraObject
   module Cql
-    class Update
+    class Update < Base
       def initialize(klass, key)
         @klass = klass
         @key = key

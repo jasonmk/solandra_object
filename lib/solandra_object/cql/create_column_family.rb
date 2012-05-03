@@ -1,6 +1,6 @@
 module SolandraObject#:nodoc:
   module Cql #:nodoc:
-    class CreateColumnFamily #:nodoc:
+    class CreateColumnFamily < Base #:nodoc:
       def initialize(cf_name)
         @cf_name = cf_name
         @columns = {}

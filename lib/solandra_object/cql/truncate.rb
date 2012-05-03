@@ -1,6 +1,6 @@
 module SolandraObject
   module Cql
-    class Truncate
+    class Truncate < Base
       def initialize(klass)
         @klass = klass
       end

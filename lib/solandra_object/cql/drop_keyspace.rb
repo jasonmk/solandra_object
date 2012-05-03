@@ -1,6 +1,6 @@
 module SolandraObject
   module Cql
-    class DropKeyspace
+    class DropKeyspace < Base
       def initialize(ks_name)
         @ks_name = ks_name
       end

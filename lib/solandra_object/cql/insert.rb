@@ -1,6 +1,6 @@
 module SolandraObject
   module Cql
-    class Insert
+    class Insert < Base
       def initialize(klass)
         @klass = klass
         @consistency = SolandraObject::Cql::Consistency::LOCAL_QUORUM

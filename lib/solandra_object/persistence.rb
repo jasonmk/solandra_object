@@ -3,15 +3,15 @@ module SolandraObject
     extend ActiveSupport::Concern
     
     module ClassMethods
-      def remove(key)
+      def remove(*keys)
         ActiveSupport::Notifications.instrument("remove.solandra_object", :column_family => column_family, :key => key) do
-          connection.remove(column_family, key.to_s, :consistency => thrift_write_consistency)
+          cql.delete(keys).using(thrift_write_consistency).execute
         end
       end
 
       def delete_all
         ActiveSupport::Notifications.instrument("truncate.solandra_object", :column_family => column_family) do
-          connection.truncate!(column_family)
+          cql.truncate.execute
         end
       end
 
@@ -25,7 +25,7 @@ module SolandraObject
         key.tap do |key|
           attributes = encode_attributes(attributes, schema_version)
           ActiveSupport::Notifications.instrument("insert.solandra_object", :column_family => column_family, :key => key, :attributes => attributes) do
-            connection.insert(column_family, key.to_s, attributes, :consistency => thrift_write_consistency)
+            cql.update(key.to_s).columns(attributes).using(thrift_write_consistency).execute
           end
         end
       end

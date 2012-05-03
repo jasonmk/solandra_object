@@ -1,6 +1,6 @@
 module SolandraObject#:nodoc:
   module Cql #:nodoc:
-    class Select #:nodoc:
+    class Select < Base #:nodoc:
       def initialize(klass, select)
         @klass = klass
         @select = select.join(",")

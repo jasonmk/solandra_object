@@ -1,6 +1,6 @@
 module SolandraObject
   module Cql
-    class Delete
+    class Delete < Base
       def initialize(klass, keys)
         @klass = klass
         @keys = keys

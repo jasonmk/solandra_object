@@ -16,7 +16,7 @@ module SolandraObject
     include FinderMethods
     include SpawnMethods
     
-    attr_reader :klass, :column_family, :loaded
+    attr_reader :klass, :column_family, :loaded, :cql
     alias :loaded? :loaded
     alias :default_scoped? :default_scoped
     
@@ -25,6 +25,7 @@ module SolandraObject
       @loaded = false
       @results = []
       @default_scoped = false
+      @cql = SolandraObject::Cql.for_class(klass)
       
       SINGLE_VALUE_METHODS.each {|v| instance_variable_set(:"@#{v}_value", nil)}
       MULTI_VALUE_METHODS.each {|v| instance_variable_set(:"@#{v}_values", [])}
@@ -196,7 +197,11 @@ module SolandraObject
     end
     
     def query_via_cql
-      
+      cql = cql.select(@klass.attribute_definitions.keys - @klass.lazy_attributes)
+      cql.using(@consistency_value) if @consistency_value
+      @where_values.each do |wv|
+        cql.conditions(wv)
+      end
     end
     
     def query_via_solr

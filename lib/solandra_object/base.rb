@@ -271,7 +271,8 @@ module SolandraObject #:nodoc:
       # delegate :find_each, :find_in_batches, :to => :scoped
       delegate :order, :limit, :offset, :where, :where_not, :page, :paginate, :to => :scoped
       delegate :per_page, :each, :group, :total_pages, :search, :fulltext, :to => :scoped
-      delegate :count, :find, :first, :first!, :last, :last!, :to => :scoped
+      delegate :count, :first, :first!, :last, :last!, :to => :scoped
+      delegate :cql, :to => :scoped
 
       def inherited(klass)
         self.models << klass
@@ -291,6 +292,10 @@ module SolandraObject #:nodoc:
           klass = klass.superclass
         end
         klass
+      end
+      
+      def find(*keys)
+        scoped.with_cassandra.find(keys)
       end
       
       def logger

@@ -1,6 +1,6 @@
 module SolandraObject#:nodoc:
   module Cql #:nodoc:
-    class CreateKeyspace #:nodoc:
+    class CreateKeyspace < Base #:nodoc:
       def initialize(ks_name)
         @ks_name = ks_name
         @strategy_class

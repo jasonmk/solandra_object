@@ -1,6 +1,6 @@
 module SolandraObject
   module Cql
-    class UseKeyspace
+    class UseKeyspace < Base
       def initialize(ks_name)
         @ks_name = ks_name
       end

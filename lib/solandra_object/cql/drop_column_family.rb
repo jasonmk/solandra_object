@@ -1,6 +1,6 @@
 module SolandraObject
   module Cql
-    class DropColumnFamily
+    class DropColumnFamily < Base
       def initialize(cf_name)
         @cf_name = cf_name
       end
