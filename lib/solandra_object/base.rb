@@ -274,10 +274,6 @@ module SolandraObject #:nodoc:
       delegate :count, :first, :first!, :last, :last!, :to => :scoped
       delegate :cql, :to => :scoped
 
-      def inherited(klass)
-        self.models << klass
-      end
-      
       def column_family=(column_family)
         @column_family = column_family
       end

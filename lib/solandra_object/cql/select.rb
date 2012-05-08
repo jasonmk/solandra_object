@@ -25,16 +25,22 @@ module SolandraObject#:nodoc:
       end
       
       def to_cql
+        conditions = []
         values = []
-        stmt = "SELECT #{@select} FROM #{@klass.column_family} USING CONSISTENCY #{@consistency} #{@conditions.empty? ? '' : 'WHERE '}"
+        stmt = "SELECT #{@select} FROM #{@klass.column_family} USING CONSISTENCY #{@consistency} "
         @conditions.each do |k,v|
           values << v
           if v.kind_of?(Array)
-            stmt << "#{k.to_s} IN (?) "
+            conditions << "#{k.to_s} IN (?)"
           else
-            stmt << "#{k.to_s} = ? "
+            conditions << "#{k.to_s} = ?"
           end
         end
+        
+        unless conditions.empty?
+          stmt << "WHERE #{conditions.join(" AND ")} "
+        end
+        
         if @limit
           stmt << "LIMIT #{@limit}"
         end

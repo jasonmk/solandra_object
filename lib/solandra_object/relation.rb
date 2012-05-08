@@ -32,8 +32,8 @@ module SolandraObject
       @per_page_value = @klass.default_page_size
       @page_value = 1
       @offset_value = 0
-      @use_solr = true
-      @consistency = "LOCAL_QUORUM"
+      @use_solr_value = true
+      @consistency_value = "QUORUM"
       @extensions = []
       @create_with_value = {}
       apply_default_scope
@@ -174,7 +174,7 @@ module SolandraObject
     # Returns a standard array thus no more methods may be chained.
     def to_a
       return @results if loaded?
-      @results = query_via_solr
+      @results = use_solr_value ? query_via_solr : query_via_cql
       @loaded = true
       @results
     end
@@ -197,11 +197,12 @@ module SolandraObject
     end
     
     def query_via_cql
-      cql = cql.select(@klass.attribute_definitions.keys - @klass.lazy_attributes)
+      cql = @cql.select(@klass.attribute_definitions.keys - @klass.lazy_attributes)
       cql.using(@consistency_value) if @consistency_value
       @where_values.each do |wv|
         cql.conditions(wv)
       end
+      cql.execute
     end
     
     def query_via_solr

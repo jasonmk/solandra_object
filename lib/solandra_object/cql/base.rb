@@ -6,7 +6,9 @@ module SolandraObject
       end
       
       def execute
-        SolandraObject::Base.connection.execute_cql_query(self.to_cql)
+        cql = self.to_cql
+        Rails.logger.debug(cql)
+        SolandraObject::Base.connection.execute_cql_query(cql)
       end
     end
   end

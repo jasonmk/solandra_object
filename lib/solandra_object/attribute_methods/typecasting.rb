@@ -27,6 +27,7 @@ module SolandraObject
         def inherited(child)
           super
           child.attribute_definitions = attribute_definitions.dup
+          self.models << child
         end
 
         def typecast_attribute(record, name, value)
