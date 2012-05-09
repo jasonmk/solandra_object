@@ -67,6 +67,7 @@ module SolandraObject
         when :first, :last, :all
           send(args.first)
         else
+          self.use_solr_value = false
           find_with_ids(*args)
         end
       end

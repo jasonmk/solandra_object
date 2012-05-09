@@ -266,13 +266,13 @@ module SolandraObject #:nodoc:
       end
 
     class << self
-      delegate :first, :all, :exists?, :any?, :many?, :to => :scoped
+      delegate :find, :first, :all, :exists?, :any?, :many?, :to => :scoped
       delegate :destroy, :destroy_all, :delete, :delete_all, :update, :update_all, :to => :scoped
       # delegate :find_each, :find_in_batches, :to => :scoped
       delegate :order, :limit, :offset, :where, :where_not, :page, :paginate, :to => :scoped
       delegate :per_page, :each, :group, :total_pages, :search, :fulltext, :to => :scoped
       delegate :count, :first, :first!, :last, :last!, :to => :scoped
-      delegate :cql, :to => :scoped
+      delegate :cql, :with_cassandra, :with_solr, :to => :scoped
 
       def column_family=(column_family)
         @column_family = column_family
@@ -290,9 +290,9 @@ module SolandraObject #:nodoc:
         klass
       end
       
-      def find(*keys)
-        scoped.with_cassandra.find(keys)
-      end
+      # def find(*keys)
+        # scoped.with_cassandra.find(keys)
+      # end
       
       def logger
         Rails.logger

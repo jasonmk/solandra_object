@@ -59,8 +59,8 @@ module SolandraObject
           if coder.options[:fulltext]
             @fulltext_fields << attr.name
           end
-          return ERB.new(File.read(File.join(File.dirname(__FILE__),"..","..","..","config","schema.xml.erb"))).result(binding)
         end
+        return ERB.new(File.read(File.join(File.dirname(__FILE__),"..","..","..","config","schema.xml.erb"))).result(binding)
       end
       
       def upload_solr_schemas(column_family = :all)

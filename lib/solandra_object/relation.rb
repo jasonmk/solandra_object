@@ -202,7 +202,11 @@ module SolandraObject
       @where_values.each do |wv|
         cql.conditions(wv)
       end
-      cql.execute
+      results = []
+      CassandraCQL::Result.new(cql.execute).fetch do |row|
+        results << @klass.instantiate(row.row.key,row.to_hash)
+      end
+      results
     end
     
     def query_via_solr
